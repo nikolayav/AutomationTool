@@ -1,0 +1,13 @@
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\bin\Debug\AutomationTool.exe.config
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\bin\Debug\AutomationTool.exe
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\bin\Debug\AutomationTool.pdb
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\bin\Debug\Microsoft.Deployment.WindowsInstaller.dll
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.csprojAssemblyReference.cache
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.Form1.resources
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.Properties.Resources.resources
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.csproj.GenerateResource.cache
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.csproj.CoreCompileInputs.cache
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.csproj.CopyComplete
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.exe
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.pdb
+C:\Users\navroniev3\source\repos\AutomationTool\AutomationTool\obj\Debug\AutomationTool.csproj.ResolveComReference.cache
