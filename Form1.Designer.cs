@@ -41,6 +41,7 @@
             this.pkgVerLabel = new System.Windows.Forms.Label();
             this.pkgrNameLabel = new System.Windows.Forms.Label();
             this.brwMsiLabel = new System.Windows.Forms.Label();
+            this.logBox = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // browseBtn1
@@ -181,12 +182,21 @@
             this.brwMsiLabel.TabIndex = 17;
             this.brwMsiLabel.Text = "Select MSI File:";
             // 
+            // logBox
+            // 
+            this.logBox.Location = new System.Drawing.Point(13, 286);
+            this.logBox.Name = "logBox";
+            this.logBox.Size = new System.Drawing.Size(281, 80);
+            this.logBox.TabIndex = 18;
+            this.logBox.Text = "";
+            // 
             // Form1
             // 
             this.AcceptButton = this.createBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(316, 335);
+            this.ClientSize = new System.Drawing.Size(324, 389);
+            this.Controls.Add(this.logBox);
             this.Controls.Add(this.brwMsiLabel);
             this.Controls.Add(this.pkgrNameLabel);
             this.Controls.Add(this.pkgVerLabel);
@@ -206,6 +216,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Automation Tool";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -232,6 +243,7 @@
         private System.Windows.Forms.Label pkgVerLabel;
         private System.Windows.Forms.Label pkgrNameLabel;
         private System.Windows.Forms.Label brwMsiLabel;
+        private System.Windows.Forms.RichTextBox logBox;
     }
 }
 
