@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AutomationTool")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("This program automates manual tasks in Package Factory")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Nikolay Avroniev")]
 [assembly: AssemblyProduct("AutomationTool")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Nikolay Avroniev, Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6cc21364-d9e6-459a-85ed-368b1ef7fa3d")]
+[assembly: Guid("17593d92-981d-4ddc-9d42-a2d598c6bb16")]
 
 // Version information for an assembly consists of the following four values:
 //
