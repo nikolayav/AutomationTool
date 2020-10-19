@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AutomationTool")]
+[assembly: AssemblyTitle("AutomationTool_1.0")]
 [assembly: AssemblyDescription("This program automates manual tasks in Package Factory")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nikolay Avroniev")]

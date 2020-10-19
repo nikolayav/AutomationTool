@@ -1,6 +1,8 @@
 ﻿using Microsoft.Deployment.WindowsInstaller;
 using System;
 using System.Collections;
+using System.Runtime.Remoting.Proxies;
+using System.ServiceModel.Security.Tokens;
 using System.Text.RegularExpressions;
 
 
@@ -8,14 +10,11 @@ namespace AutomationTool {
     class MsiEditor {
         Logger logger;
 
-        
+        public MsiEditor() {}
 
-        public MsiEditor() {
-
-        }
         public Logger Logger { get => logger; set => logger = value; }
         public void Feature_AddOrUpdate(Database db, string feature, string title, string display, string level, string directory_, string attributes) {
-            logger.Log("Transform:     Creating feature '" + feature + "'...");
+            logger.Log(String.Format("Transform:     Creating feature '{0}'...",  feature));
 
             IList featuresWithSameName = db.ExecuteQuery("SELECT * FROM Feature where Feature = '" + feature + "'");
             if (featuresWithSameName.Count > 0) {
@@ -26,25 +25,24 @@ namespace AutomationTool {
         }
 
         public void Component_AddOrUpdate(Database db, string component, string componentId, string directory_, string attributes, string feature) {
-            logger.Log("Transform:     Creating component '" + component + "'");
+            logger.Log(String.Format("Transform:     Creating component '{0}'", component));
             IList featuresWithSameName = db.ExecuteQuery("SELECT * FROM Component where Component = '" + component + "'");
             if (featuresWithSameName.Count > 0) {
                 db.Execute("UPDATE Component SET Component = '" + component + "', ComponentId = '" + componentId + "', Directory_ = '" + directory_ + "', Attributes = '" + attributes + "' WHERE Component = '" + component + "'");
-
             } else {
-                db.Execute("INSERT INTO `Component` (Component, ComponentId, Directory_, Attributes) VALUES ('" + component + "', '" + componentId + "', '" + directory_ + "', '" + attributes + "')");
+                db.Execute("INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`) VALUES ('{0}', '{1}', '{2}', '{3}')", component, componentId, directory_ , attributes);              
             }
 
             IList associatedFeatures = db.ExecuteQuery("SELECT * FROM FeatureComponents where Component_ = '" + component + "'");
             if (associatedFeatures.Count > 0) {
-                db.Execute("UPDATE Component SET Feature_ = '" + feature + "', Component_ = '" + component + "'");
+                db.Execute("UPDATE Component SET Feature_ = '" + feature + "', Component_ = '"+ component + "'");
             } else {
-                db.Execute("INSERT INTO `FeatureComponents` (Feature_, Component_) VALUES ('" + feature + "', '" + component + "')");
+                db.Execute("INSERT INTO `FeatureComponents` (Feature_, Component_) VALUES ('{0}', '{1}')", feature, component);
             }
         }
 
         public void Reg_Add(Database db, string registry, string root, string key, string name, string value, string component) {
-            logger.Log("Transform:     Creating registry value '" + value + "' in HLKM\\" + key + "");
+            logger.Log(String.Format("Transform:     Creating registry key HKLM\\{0} with value {1} = {2}", key, name, value));
 
             db.Execute("INSERT INTO `Registry` (`Registry`, `Root`, `Key`, `Name`, `Value`, `Component_`) VALUES ('{0}', {1}, '{2}', '{3}', '{4}', '{5}')", registry, root, key, name, value, component);
         }
@@ -53,11 +51,11 @@ namespace AutomationTool {
 
             IList existingProperties = db.ExecuteQuery("SELECT * FROM Property where Property = '" + property + "'");
             if (existingProperties.Count > 0) {
-                logger.Log("Transform:     Updating property " + property + " = " + value + "");
+                logger.Log(String.Format("Transform:     Updating property {0} = {1}", property, value));
                 db.Execute("UPDATE Property SET Value = '" + value + "' WHERE Property = '" + property + "'");
             } else {
-                logger.Log("Transform:     Creating property " + property + " = " + value + "");
-                db.Execute("INSERT INTO Property (Property, Value) VALUES ('" + property + "', '" + value + "')");
+                logger.Log("Transform:     Creating property " + String.Format("{0}={1}", property, value));
+                db.Execute("INSERT INTO Property (Property, Value) VALUES ('{0}', '{1}')", property, value);
             }
         }
 
@@ -80,10 +78,7 @@ namespace AutomationTool {
         public string GenerateUniqueGuid(Database db, string type) {
             string guid = "";
             if (type.Equals("ism")) {
-                guid = "{" + Guid.NewGuid().ToString().ToUpperInvariant() + "}";
-                if (guid.Equals("{00000000-0000-0000-0000-000000000000}")) {
-                    return GenerateUniqueGuid(db, type);
-                }
+                guid = String.Format("{0}{1}{2}", "{", Guid.NewGuid().ToString().ToUpperInvariant(), "}");
             }
 
             IList existingRegs = db.ExecuteQuery("SELECT Registry FROM Registry");
@@ -107,7 +102,9 @@ namespace AutomationTool {
                     }
                 }
             }
-
+            if (guid.Equals("{00000000-0000-0000-0000-000000000000}", StringComparison.InvariantCultureIgnoreCase) || guid.Equals("{5F0C6514-2485-4FC8-8029-A1A7A2CFA768}", StringComparison.InvariantCultureIgnoreCase) || guid.Equals("{E8E3F922-E7E0-46F0-99C2-2AB0FFA6BDBF}", StringComparison.InvariantCultureIgnoreCase)) {
+                return GenerateUniqueGuid(db, type);
+            }
             return guid;
         }
     }

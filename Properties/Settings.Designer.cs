@@ -22,5 +22,17 @@ namespace AutomationTool.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool True {
+            get {
+                return ((bool)(this["True"]));
+            }
+            set {
+                this["True"] = value;
+            }
+        }
     }
 }

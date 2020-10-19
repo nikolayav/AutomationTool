@@ -18,7 +18,7 @@ namespace AutomationTool {
         public Administrator Adm { get => adm; set => adm = value; }
         public Logger Logger { get => logger; set => logger = value; }
 
-        public void CreateXML(Project proj) {
+        public void CreateXML(ProjectInfo proj) {
             string newXLFile = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", adm.ProjectFolder, "Doku", String.Format("{0}_{1}_1.xlsx", proj.PkgName, proj.PkgVer));
 
             if (File.Exists(@"templates\template_excel.xlsx")) {
@@ -36,12 +36,12 @@ namespace AutomationTool {
                         }
                     }
                 }
-                Logger.Log("System:     Copying " + Path.GetFileName(newXLFile) + "...");
+                Logger.Log(String.Format("System:     Copying {0}...", Path.GetFileName(newXLFile)));
 
                 File.Copy(@"templates\template_excel.xlsx", newXLFile);
             }
 
-            Logger.Log("Excel:     Updating cells in " + Path.GetFileName(newXLFile) + "...");
+            Logger.Log(String.Format("Excel:     Updating cells in {0}...", Path.GetFileName(newXLFile)));
 
 
             Excel.Application excel = new Excel.Application();
@@ -53,7 +53,6 @@ namespace AutomationTool {
                 xlSheet.Cells[5, 3].Value = proj.PimsId;
                 xlSheet.Cells[6, 3].Value = proj.PkgName;
                 xlSheet.Cells[7, 3].Value = proj.PkgVer;
-                xlSheet.Cells[8, 3].Value = String.Format("{0}_{1}", proj.PkgName, proj.PkgVer);
                 xlSheet.Cells[9, 3].Value = proj.AppName;
                 xlSheet.Cells[10, 3].Value = proj.AppVer;
                 xlSheet.Cells[33, 3].Value = proj.AppName;
@@ -66,7 +65,7 @@ namespace AutomationTool {
                 xlSheet.Cells[78, 3].Value = proj.UpgradeCode;
                 xlSheet.Cells[79, 3].Value = proj.UpgradeCode;
 
-                Logger.Log("Excel:     Saving " + Path.GetFileName(newXLFile) + "...");
+                Logger.Log(String.Format("Excel:     Saving {0}...", Path.GetFileName(newXLFile)));
 
                 wb.Save();
 
@@ -77,7 +76,7 @@ namespace AutomationTool {
             }
         }
 
-        public void CreateMst(Project proj) {
+        public void CreateMst(ProjectInfo proj) {
 
             Logger.Log("File:     Extracting .reg info...");
 
@@ -112,7 +111,7 @@ namespace AutomationTool {
             Adm.CheckIfFileExistsAndRenameOldFile(transform);
             Adm.CheckIfFileExistsAndRenameOldFile(tempDb);
 
-            Logger.Log("System:     Creating " + Path.GetFileName(transform) + " and " + Path.GetFileName(tempDb) + " files...");
+            Logger.Log(String.Format("System:     Creating {0} and {1} files...", Path.GetFileName(transform), Path.GetFileName(tempDb)));
 
             File.Copy(referenceDb, tempDb, true);
 
@@ -162,7 +161,7 @@ namespace AutomationTool {
                         db.SummaryInfo.Comments = proj.Comments;
                         db.SummaryInfo.Author = proj.AuthorName;
 
-                        Logger.Log("Transform:     Saving " + Path.GetFileName(transform) + " file...");
+                        Logger.Log(String.Format("Transform:     Saving {0} file...", Path.GetFileName(transform)));
 
                         db.GenerateTransform(origDatabase, transform);
                         db.Commit();
@@ -176,7 +175,7 @@ namespace AutomationTool {
             }
         }
 
-        public void GenerateCustomMsi(Project proj, bool button3264bit, bool button64bit) {
+        public void GenerateCustomMsi(ProjectInfo proj, bool is32bit) {
             Logger.Log("File:     Extracting .reg info...");
 
             string auditKeyPath = "";
@@ -209,7 +208,7 @@ namespace AutomationTool {
 
             adm.CheckIfFileExistsAndRenameOldFile(ism);
 
-            Logger.Log("System:     Creating " + Path.GetFileName(ism) + " and " + Path.GetFileName(ism) + " files...");
+            Logger.Log(String.Format("System:     Creating {0} file...", Path.GetFileName(ism)));
 
             File.Copy(referenceDb, ism, true);
 
@@ -255,9 +254,9 @@ namespace AutomationTool {
                         Logger.Log("ISM:     Editing summary information stream...");
 
                         // Edit summary info stream
-                        if (button3264bit) {
+                        if (is32bit) {
                             db.SummaryInfo.Template = "Intel;1033";
-                        } else if (button64bit) {
+                        } else {
                             db.SummaryInfo.Template = "x64;1033";
                         }
 
@@ -266,7 +265,7 @@ namespace AutomationTool {
                         db.SummaryInfo.Comments = proj.Comments;
                         db.SummaryInfo.Author = proj.AuthorName;
 
-                        Logger.Log("ISM:     Saving " + Path.GetFileName(ism) + " file...");
+                        Logger.Log(String.Format("ISM:     Saving {0} file...", Path.GetFileName(ism)));
 
                         db.Commit();
                     }
