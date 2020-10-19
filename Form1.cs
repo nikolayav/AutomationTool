@@ -4,19 +4,25 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Drawing;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using MetroFramework.Controls;
 
 namespace AutomationTool {
     public partial class Form1 : MetroFramework.Forms.MetroForm {
         public Form1() {
             InitializeComponent();
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            
+
         }
 
-
+        private string _loadMsiPath = "";
+        private string _loadMstPath = "";
         private static string _fullMsiPath = "";
         private string _projectFolder = "";
 
-        private void browseBtn_Click(object sender, EventArgs e) {
+        private void browseBtn1_Click(object sender, EventArgs e) {
 
             ofd1.Filter = "MSI|*.msi";
             if (ofd1.ShowDialog() == DialogResult.OK) {
@@ -30,54 +36,47 @@ namespace AutomationTool {
         Administrator adm = new Administrator();
         Creator creator = new Creator();
 
-        private void startProcessing() {
+        private MainProcessor getMainProcessor() {
+            logger.ConfigureLogging();
             msiEditor.Logger = logger;
             adm.Logger = logger;
             creator.Logger = logger;
 
-            bool isCustomMsi = customMsiCheckBox.Checked;
-            logger.ConfigureLogging();
-
-            ProjectInfo proj = new ProjectInfo();
-            proj.ProductCode = "";
-            proj.UpgradeCode = "";
-            if (isCustomMsi) {
+            ProjectInfo proj = new ProjectInfo("", "", pimsIdTextBox.Text, appNameTextBox.Text, appVerTextBox.Text, pkgNameTextBox.Text, pkgVerTextBox.Text,
+                                                String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC"), "", "", String.Format("{0}_{1}_{2}", "BMW", pkgNameTextBox.Text, pkgVerTextBox.Text), 
+                                                "", customMsiCheckBox.Checked, Is32bit());
+            //proj.isCustomMsi = customMsiCheckBox.Checked;
+           //proj.ProductCode = "";
+            //proj.UpgradeCode = "";
+            if (proj.isCustomMsi) {
                 proj.FolderPath = "";
                 proj.MsiName = "";
             } else {
                 proj.FolderPath = Path.GetDirectoryName(_fullMsiPath) + "\\";
                 proj.MsiName = Path.GetFileNameWithoutExtension(_fullMsiPath);
             }
-
-            proj.PimsId = pimsIdTextBox.Text;
-            proj.AppName = appNameTextBox.Text;
-            proj.AppVer = appVerTextBox.Text;
-            proj.PkgName = pkgNameTextBox.Text;
-            proj.PkgVer = pkgVerTextBox.Text;
-            proj.AuthorName = String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC");
-            proj.FeatureName = String.Format("{0}_{1}_{2}", "BMW", proj.PkgName, proj.PkgVer);
+            //proj.is32bit = Is32bit();
+            //proj.PimsId = pimsIdTextBox.Text;
+            //proj.AppName = appNameTextBox.Text;
+            //proj.AppVer = appVerTextBox.Text;
+            //proj.PkgName = pkgNameTextBox.Text;
+            //proj.PkgVer = pkgVerTextBox.Text;
+            //proj.AuthorName = String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC");
+            //proj.FeatureName = String.Format("{0}_{1}_{2}", "BMW", proj.PkgName, proj.PkgVer);
             string dateNow = DateTime.Now.ToString("d.M.yyyy");
             string[] pkgrNameArr = proj.AuthorName.Split(' ');
             char first = pkgrNameArr[0].ToCharArray()[0];
             char second = pkgrNameArr[1].ToCharArray()[0];
             proj.Comments = String.Format("{0}{1}, {2}, {3}", first.ToString().ToLowerInvariant(), second.ToString().ToLowerInvariant(), dateNow, "IS v23");
 
+
             adm.ProjectFolder = _projectFolder;
             adm.FullMsiPath = _fullMsiPath;
             creator.Adm = adm;
             creator.MsiEditor = msiEditor;
 
-            adm.createFolders(String.Format("{0}_{1}", proj.PkgName, proj.PkgVer));
-
-            if (!isCustomMsi) {
-                creator.CreateMst(proj);
-                creator.CreateXML(proj);
-                adm.CreateInstallUninstallVbs(proj, false, String.Format("{0}_{1}_install.vbs", proj.PkgName, proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", proj.PkgName, proj.PkgVer));
-            } else {
-                creator.GenerateCustomMsi(proj, Is32bit());
-                creator.CreateXML(proj);
-                adm.CreateInstallUninstallVbs(proj, true, String.Format("{0}_{1}_install.vbs", proj.PkgName, proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", proj.PkgName, proj.PkgVer));
-            }
+            MainProcessor main = new MainProcessor(msiEditor, adm, creator, logger, proj);
+            return main;
         }
 
         private void fileLocationTextBox1_Enter(object sender, EventArgs e) {
@@ -186,15 +185,25 @@ namespace AutomationTool {
             }
 
             enableControls(false);
-            backgroundWorker1.RunWorkerAsync();
+            MainProcessor main = getMainProcessor();
+            progressBar1.Value = 0;
+            progressBar1.Visible = true;
+            progressBar1.Maximum = main.MaxProgressValue;
+            backgroundWorker1.RunWorkerAsync(main);
         }
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
-            startProcessing();
+            MainProcessor main = (MainProcessor)e.Argument;
+            main.ProgressChanged += SetProgress;
+            main.startProcessing();
+        }
 
+        private void SetProgress(object sender, MainProcessorEventArgs e) {
+            backgroundWorker1.ReportProgress(e.Progress);
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 
+            progressBar1.Value = e.ProgressPercentage;
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
@@ -208,5 +217,105 @@ namespace AutomationTool {
             }
 
         }
+
+        private void metroButton1_Click(object sender, EventArgs e) {
+            ofd1.Filter = "MST|*.mst";
+            if (ofd1.ShowDialog() == DialogResult.OK) {
+                loadMstTextBox.Text = ofd1.FileName;
+                _loadMstPath = ofd1.FileName;
+            }
+
+            Dictionary<string, string> propDict = new Dictionary<string, string>();
+            // add summary stream info
+            propDict.Add("ALLUSERS", "1");
+            propDict.Add("ARPNOMODIFY", "1");
+            propDict.Add("ARPNOREMOVE", "1");
+            propDict.Add("ARPNOREPAIR", "1");
+            propDict.Add("BMW_Package_Author", String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC"));
+            propDict.Add("BMW_PackageName", pkgNameTextBox.Text);
+            propDict.Add("BMW_PackageVersion", pkgVerTextBox.Text);
+            propDict.Add("Manufacturer", "BMW Package Factory");
+            propDict.Add("MSIRESTARTMANAGERCONTROL", "Disable");
+            propDict.Add("ProductName", appNameTextBox.Text);
+            propDict.Add("ProductVersion", appVerTextBox.Text);
+            propDict.Add("PROMPTROLLBACKCOST", "D");
+            propDict.Add("REBOOT", "ReallySuppress");
+            propDict.Add("REBOOTPROMPT", "S");
+
+
+            MsiEditor msiEditor = new MsiEditor();
+
+/*            proj.FeatureName = String.Format("{0}_{1}_{2}", "BMW", proj.PkgName, proj.PkgVer);
+            string dateNow = DateTime.Now.ToString("d.M.yyyy");
+            string[] pkgrNameArr = proj.AuthorName.Split(' ');
+            char first = pkgrNameArr[0].ToCharArray()[0];
+            char second = pkgrNameArr[1].ToCharArray()[0];
+            proj.Comments = String.Format("{0}{1}, {2}, {3}", first.ToString().ToLowerInvariant(), second.ToString().ToLowerInvariant(), dateNow, "IS v23");*/
+
+            Dictionary<string, string> extract = msiEditor.checkProperties(_loadMsiPath, _loadMstPath);
+
+            DataGridViewRow row = new DataGridViewRow();
+
+            int rowNumber = 0;
+            foreach (var pair in extract) {
+                string value;
+                if (propDict.TryGetValue(pair.Key, out value)) {
+                    if (!value.Equals(pair.Value)) {
+                        metroGrid1.Rows.Add(pair.Key, pair.Value, "Fail");
+                        metroGrid1.Rows[rowNumber].Cells[0].ToolTipText = String.Format("Expected {0}", pair.Value);
+                        metroGrid1.Rows[rowNumber].Cells[0].Style.ForeColor = System.Drawing.Color.Red;
+                        metroGrid1.Rows[rowNumber].Cells[1].Style.ForeColor = System.Drawing.Color.Red;
+                        metroGrid1.Rows[rowNumber].Cells[2].Style.ForeColor = System.Drawing.Color.Red;
+                    } else {
+                        metroGrid1.Rows.Add(pair.Key, pair.Value, "Pass");
+                        metroGrid1.Rows[rowNumber].Cells[0].Style.ForeColor = System.Drawing.Color.Green;
+                        metroGrid1.Rows[rowNumber].Cells[1].Style.ForeColor = System.Drawing.Color.Green;
+                        metroGrid1.Rows[rowNumber].Cells[2].Style.ForeColor = System.Drawing.Color.Green;
+                    }
+                } else {
+                    metroGrid1.Rows.Add(pair.Key, pair.Value, "Fail");
+                    metroGrid1.Rows[rowNumber].Cells[0].ToolTipText = String.Format("Expected {0}", pair.Value);
+                    metroGrid1.Rows[rowNumber].Cells[0].Style.ForeColor = System.Drawing.Color.Red;
+                    metroGrid1.Rows[rowNumber].Cells[1].Style.ForeColor = System.Drawing.Color.Red;
+                    metroGrid1.Rows[rowNumber].Cells[2].Style.ForeColor = System.Drawing.Color.Red;
+                }
+                rowNumber++;
+            }
+            
+        }
+
+        private void loadMsiButton_Click(object sender, EventArgs e) {
+            ofd1.Filter = "MSI|*.msi";
+            if (ofd1.ShowDialog() == DialogResult.OK) {
+                loadMsiTextBox.Text = ofd1.FileName;
+                _loadMsiPath = ofd1.FileName;
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e) {
+            this.MaximumSize = new Size(this.Width, this.Height);
+            this.MinimumSize = this.MaximumSize;
+            this.BackColor = Color.Maroon;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+        }
+
+        private void metroGrid1_CellMouseEnter(object sender, DataGridViewCellEventArgs e) {
+            if ((e.ColumnIndex == this.metroGrid1.Columns["Status"].Index)) {
+                //column name
+                DataGridViewCell cell =
+                    this.metroGrid1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                //column id
+                DataGridViewCell cell1 =
+                  this.metroGrid1.Rows[e.RowIndex].Cells["Status"];
+
+                cell.ToolTipText = "DBC";
+
+                if (cell1.Equals("Fail")) {
+                    cell.ToolTipText = "Please update NameID as required, To know more click Help icon";
+                }
+
+            }
+        }
+        
     }
 }

@@ -1,20 +1,21 @@
 ﻿using Microsoft.Deployment.WindowsInstaller;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Remoting.Proxies;
 using System.ServiceModel.Security.Tokens;
 using System.Text.RegularExpressions;
-
+using System.Windows.Forms;
 
 namespace AutomationTool {
     class MsiEditor {
         Logger logger;
-
-        public MsiEditor() {}
+        public MsiEditor() { }
 
         public Logger Logger { get => logger; set => logger = value; }
         public void Feature_AddOrUpdate(Database db, string feature, string title, string display, string level, string directory_, string attributes) {
-            logger.Log(String.Format("Transform:     Creating feature '{0}'...",  feature));
+            logger.Log(String.Format("Transform:     Creating feature '{0}'...", feature));
 
             IList featuresWithSameName = db.ExecuteQuery("SELECT * FROM Feature where Feature = '" + feature + "'");
             if (featuresWithSameName.Count > 0) {
@@ -30,12 +31,12 @@ namespace AutomationTool {
             if (featuresWithSameName.Count > 0) {
                 db.Execute("UPDATE Component SET Component = '" + component + "', ComponentId = '" + componentId + "', Directory_ = '" + directory_ + "', Attributes = '" + attributes + "' WHERE Component = '" + component + "'");
             } else {
-                db.Execute("INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`) VALUES ('{0}', '{1}', '{2}', '{3}')", component, componentId, directory_ , attributes);              
+                db.Execute("INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`) VALUES ('{0}', '{1}', '{2}', '{3}')", component, componentId, directory_, attributes);
             }
 
             IList associatedFeatures = db.ExecuteQuery("SELECT * FROM FeatureComponents where Component_ = '" + component + "'");
             if (associatedFeatures.Count > 0) {
-                db.Execute("UPDATE Component SET Feature_ = '" + feature + "', Component_ = '"+ component + "'");
+                db.Execute("UPDATE Component SET Feature_ = '" + feature + "', Component_ = '" + component + "'");
             } else {
                 db.Execute("INSERT INTO `FeatureComponents` (Feature_, Component_) VALUES ('{0}', '{1}')", feature, component);
             }
@@ -57,6 +58,7 @@ namespace AutomationTool {
                 logger.Log("Transform:     Creating property " + String.Format("{0}={1}", property, value));
                 db.Execute("INSERT INTO Property (Property, Value) VALUES ('{0}', '{1}')", property, value);
             }
+
         }
 
         public string GetProductAndUpgradeCodes(Database db, string codeType) {
@@ -72,6 +74,7 @@ namespace AutomationTool {
                     code = upgradeCode[0].ToString();
                 }
             }
+
             return code;
         }
 
@@ -106,6 +109,45 @@ namespace AutomationTool {
                 return GenerateUniqueGuid(db, type);
             }
             return guid;
+        }
+
+        public Dictionary<string, string> checkProperties(string loadMsiPath, string loadMstPath) {
+            string referenceDb = loadMsiPath;
+            string mstDb = loadMstPath;
+            //string tempDb = String.Format(loadMsiPath, "_tmp1", proj.MsiName);
+            Dictionary<string, string> propDictExtract = new Dictionary<string, string>();
+            string[] propertiesToCheck = { "ALLUSERS", "ARPNOMODIFY", "ARPNOREMOVE", "ARPNOREPAIR", "BMW_Package_Author", "BMW_PackageName", "BMW_PackageVersion",
+                "Manufacturer", "MSIRESTARTMANAGERCONTROL", "ProductName", "ProductVersion", "PROMPTROLLBACKCOST", "REBOOT", "REBOOTPROMPT"};
+
+            try {
+                using (var origDatabase = new Database(referenceDb, DatabaseOpenMode.ReadOnly)) {
+                    origDatabase.ApplyTransform(loadMstPath);
+                    for (int i = 0; i < propertiesToCheck.Length; i++) { 
+                            IList properties = origDatabase.ExecuteQuery(String.Format("SELECT * FROM Property where Property = '{0}'", propertiesToCheck[i]));
+                            if (properties.Count > 0) {
+                                propDictExtract.Add(propertiesToCheck[i], properties[1].ToString());
+
+                            }
+                        }
+                    }
+                
+            } catch {
+                throw;
+            } finally {
+                //File.Delete(tempDb);
+            }
+
+            return propDictExtract;
+        }
+
+        public int MaxProgressValue { get => 0; }
+        // Declare the delegate (if using non-generic pattern).
+        public delegate void TickProgress(object sender, EventArgs e);
+        // Declare the event.
+        public event TickProgress ProgressChanged;
+
+        private void ReportProgress() {
+            ProgressChanged.Invoke(this, new EventArgs());
         }
     }
 }

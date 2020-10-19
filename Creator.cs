@@ -40,7 +40,7 @@ namespace AutomationTool {
 
                 File.Copy(@"templates\template_excel.xlsx", newXLFile);
             }
-
+            ReportProgress();
             Logger.Log(String.Format("Excel:     Updating cells in {0}...", Path.GetFileName(newXLFile)));
 
 
@@ -74,6 +74,7 @@ namespace AutomationTool {
             } finally {
                 wb.Close();
             }
+            ReportProgress();
         }
 
         public void CreateMst(ProjectInfo proj) {
@@ -101,7 +102,7 @@ namespace AutomationTool {
                     }
                 }
             }
-
+            ReportProgress();
             string referenceDb = Adm.FullMsiPath;
             string tempDb = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", this.Adm.ProjectFolder, "Work", String.Format("{0}.msi_tmp1", proj.MsiName));
             string transform = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", this.Adm.ProjectFolder, "Work", String.Format("{0}_{1}.mst", proj.PkgName, proj.PkgVer));
@@ -120,10 +121,10 @@ namespace AutomationTool {
                     using (var db = new Database(tempDb, DatabaseOpenMode.Direct)) {
 
                         MsiEditor.Feature_AddOrUpdate(db, proj.FeatureName, proj.FeatureName, "0", "1", "INSTALLDIR", "48");
-
+                        ReportProgress();
                         MsiEditor.Component_AddOrUpdate(db, auditComponentx86, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName);
                         MsiEditor.Component_AddOrUpdate(db, auditComponentx64, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName);
-
+                        ReportProgress();
 
                         foreach (KeyValuePair<string, string> kvp in regDict) {
                             if (kvp.Key.Equals("MSIPackageName")) {
@@ -134,7 +135,7 @@ namespace AutomationTool {
                                 MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, kvp.Value, auditComponentx86);
                             }
                         }
-
+                        ReportProgress();
                         MsiEditor.Property_AddOrUpdate("ALLUSERS", "1", db);
                         MsiEditor.Property_AddOrUpdate("ARPNOMODIFY", "1", db);
                         MsiEditor.Property_AddOrUpdate("ARPNOREMOVE", "1", db);
@@ -149,7 +150,7 @@ namespace AutomationTool {
                         MsiEditor.Property_AddOrUpdate("PROMPTROLLBACKCOST", "D", db);
                         MsiEditor.Property_AddOrUpdate("REBOOT", "ReallySuppress", db);
                         MsiEditor.Property_AddOrUpdate("REBOOTPROMPT", "S", db);
-
+                        ReportProgress();
                         proj.ProductCode = MsiEditor.GetProductAndUpgradeCodes(db, "ProductCode");
                         proj.UpgradeCode = MsiEditor.GetProductAndUpgradeCodes(db, "UpgradeCode");
 
@@ -160,7 +161,7 @@ namespace AutomationTool {
                         db.SummaryInfo.Subject = proj.AppName;
                         db.SummaryInfo.Comments = proj.Comments;
                         db.SummaryInfo.Author = proj.AuthorName;
-
+                        ReportProgress();
                         Logger.Log(String.Format("Transform:     Saving {0} file...", Path.GetFileName(transform)));
 
                         db.GenerateTransform(origDatabase, transform);
@@ -173,6 +174,7 @@ namespace AutomationTool {
             } finally {
                 File.Delete(tempDb);
             }
+            ReportProgress();
         }
 
         public void GenerateCustomMsi(ProjectInfo proj, bool is32bit) {
@@ -199,7 +201,7 @@ namespace AutomationTool {
                     }
                 }
             }
-
+            ReportProgress();
             string referenceDb = @"templates\template_isproject.ism";
             string ism = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", adm.ProjectFolder, "Work", String.Format("{0}.ism", String.Format("{0}_{1}", proj.PkgName, proj.PkgVer)));
 
@@ -211,7 +213,7 @@ namespace AutomationTool {
             Logger.Log(String.Format("System:     Creating {0} file...", Path.GetFileName(ism)));
 
             File.Copy(referenceDb, ism, true);
-
+            ReportProgress();
             try {
                 using (var origDatabase = new Database(referenceDb, DatabaseOpenMode.ReadOnly)) {
                     using (var db = new Database(ism, DatabaseOpenMode.Direct)) {
@@ -219,10 +221,10 @@ namespace AutomationTool {
                         proj.UpgradeCode = msiEditor.GenerateUniqueGuid(db, "ism");
 
                         msiEditor.Feature_AddOrUpdate(db, proj.FeatureName, proj.FeatureName, "0", "1", "INSTALLDIR", "48");
-
+                        ReportProgress();
                         msiEditor.Component_AddOrUpdate(db, auditComponentx86, msiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName);
                         msiEditor.Component_AddOrUpdate(db, auditComponentx64, msiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName);
-
+                        ReportProgress();
 
                         foreach (KeyValuePair<string, string> kvp in regDict) {
                             if (kvp.Key.Equals("MSIPackageName")) {
@@ -233,7 +235,7 @@ namespace AutomationTool {
                                 msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, kvp.Value, auditComponentx86);
                             }
                         }
-
+                        ReportProgress();
                         msiEditor.Property_AddOrUpdate("ProductCode", proj.ProductCode, db);
                         msiEditor.Property_AddOrUpdate("UpgradeCode", proj.UpgradeCode, db);
                         msiEditor.Property_AddOrUpdate("ALLUSERS", "1", db);
@@ -264,7 +266,7 @@ namespace AutomationTool {
                         db.SummaryInfo.Subject = proj.AppName;
                         db.SummaryInfo.Comments = proj.Comments;
                         db.SummaryInfo.Author = proj.AuthorName;
-
+                        ReportProgress();
                         Logger.Log(String.Format("ISM:     Saving {0} file...", Path.GetFileName(ism)));
 
                         db.Commit();
@@ -275,6 +277,16 @@ namespace AutomationTool {
             } finally {
                 //File.Delete(tempDb);
             }
+            ReportProgress();
+        }
+        public int MaxProgressValue { get => 9; }
+        // Declare the delegate (if using non-generic pattern).
+        public delegate void TickProgress(object sender, EventArgs e);
+        // Declare the event.
+        public event TickProgress ProgressChanged;
+
+        private void ReportProgress() {
+            ProgressChanged.Invoke(this, new EventArgs());
         }
     }
 }

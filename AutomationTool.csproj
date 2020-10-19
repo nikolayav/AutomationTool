@@ -87,6 +87,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
+    <Compile Include="MainProcessor.cs" />
     <Compile Include="MsiEditor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInfo.cs" />

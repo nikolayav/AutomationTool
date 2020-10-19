@@ -12,7 +12,26 @@
         string upgradeCode;
         string featureName;
         string comments;
+        public bool is32bit;
+        public bool isCustomMsi;
 
+        public ProjectInfo(string folderPath, string msiName, string pimsId, string appName, string appVer,
+            string pkgName, string pkgVer, string authorName, string productCode, string upgradeCode, string featureName, string comments, bool is32bit, bool isCustomMsi) {
+            this.folderPath = folderPath;
+            this.msiName = msiName;
+            this.pimsId = pimsId;
+            this.appName = appName;
+            this.appVer = appVer;
+            this.pkgName = pkgName;
+            this.pkgVer = pkgVer;
+            this.authorName = authorName;
+            this.productCode = productCode;
+            this.upgradeCode = upgradeCode;
+            this.featureName = featureName;
+            this.comments = comments;
+            this.is32bit = is32bit;
+            this.isCustomMsi = isCustomMsi;
+        }
         public string FolderPath { get => folderPath; set => folderPath = value; }
         public string MsiName { get => msiName; set => msiName = value; }
         public string PimsId { get => pimsId; set => pimsId = value; }

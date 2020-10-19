@@ -59,6 +59,7 @@ namespace AutomationTool {
                         sw.WriteLine(lineToWrite);
                     }
                 }
+                ReportProgress();
             }
             using (FileStream fs = File.OpenWrite(Path.Combine(this.ProjectFolder, "Work", uninstallvbs))) {
                 using (StreamWriter sw = new StreamWriter(fs, utf8WithoutBom)) {
@@ -76,11 +77,13 @@ namespace AutomationTool {
                         sw.WriteLine(lineToWrite);
                     }
                 }
+                ReportProgress();
             }
             string upgradeVbsPath = Path.Combine(this.ProjectFolder, "Work", "Upgrade.vbs");
             if (!File.Exists(upgradeVbsPath)) {
                 File.Copy(@"templates\Upgrade.vbs", upgradeVbsPath);
             }
+            ReportProgress();
         }
         public void createFolders(string pkgName) {
 
@@ -96,6 +99,15 @@ namespace AutomationTool {
                     Directory.CreateDirectory(Path.Combine(this.ProjectFolder, folder));
                 }
             }
+        }
+        public int MaxProgressValue { get => 3; }
+        // Declare the delegate (if using non-generic pattern).
+        public delegate void TickProgress(object sender, EventArgs e);
+        // Declare the event.
+        public event TickProgress ProgressChanged;
+  
+        private void ReportProgress() {
+            ProgressChanged.Invoke(this, new EventArgs());
         }
     }
 
