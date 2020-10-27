@@ -1,10 +1,8 @@
 ﻿using Microsoft.Deployment.WindowsInstaller;
-using Microsoft.Office.Interop.Excel;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Excel = Microsoft.Office.Interop.Excel;
+
 
 
 namespace AutomationTool {
@@ -43,38 +41,24 @@ namespace AutomationTool {
             ReportProgress();
             Logger.Log(String.Format("Excel:     Updating cells in {0}...", Path.GetFileName(newXLFile)));
 
+            OpenXMLEditor openXmlEditor = new OpenXMLEditor();
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 5, "C", proj.PimsId);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 6, "C", proj.PkgName);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 7, "C", proj.PkgVer);
 
-            Excel.Application excel = new Excel.Application();
-            Workbook wb = excel.Workbooks.Open(newXLFile);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 9, "C", proj.AppName);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 10, "C", proj.AppVer);
 
-            try {
-                Excel.Worksheet xlSheet = wb.Sheets["Universal"];
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 33, "C", proj.AppName);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 34, "C", proj.AppName);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 35, "C", proj.AuthorName);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 36, "C", proj.Comments);
 
-                xlSheet.Activate();
-                xlSheet.Cells[5, 3].Value = proj.PimsId;
-                xlSheet.Cells[6, 3].Value = proj.PkgName;
-                xlSheet.Cells[7, 3].Value = proj.PkgVer;
-                xlSheet.Cells[9, 3].Value = proj.AppName;
-                xlSheet.Cells[10, 3].Value = proj.AppVer;
-                xlSheet.Cells[33, 3].Value = proj.AppName;
-                xlSheet.Cells[34, 3].Value = proj.AppName;
-                xlSheet.Cells[35, 3].Value = proj.AuthorName;
-                xlSheet.Cells[36, 3].Value = proj.Comments;
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 76, "C", proj.ProductCode);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 77, "C", proj.ProductCode);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 78, "C", proj.UpgradeCode);
+            openXmlEditor.UpdateExcelSheetData(newXLFile, "Universal", 79, "C", proj.UpgradeCode);
 
-                xlSheet.Cells[76, 3].Value = proj.ProductCode;
-                xlSheet.Cells[77, 3].Value = proj.ProductCode;
-                xlSheet.Cells[78, 3].Value = proj.UpgradeCode;
-                xlSheet.Cells[79, 3].Value = proj.UpgradeCode;
-
-                Logger.Log(String.Format("Excel:     Saving {0}...", Path.GetFileName(newXLFile)));
-
-                wb.Save();
-
-            } catch (Exception ex) {
-                throw;
-            } finally {
-                wb.Close();
-            }
             ReportProgress();
         }
 
