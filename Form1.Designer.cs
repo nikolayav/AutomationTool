@@ -25,9 +25,9 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             this.ofd1 = new System.Windows.Forms.OpenFileDialog();
             this.ofd2 = new System.Windows.Forms.OpenFileDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
@@ -35,6 +35,11 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.metroTabPage1 = new MetroFramework.Controls.MetroTabPage();
+            this.editMstCheckBox = new MetroFramework.Controls.MetroCheckBox();
+            this.loadMstLabel1 = new MetroFramework.Controls.MetroLabel();
+            this.loadMstBtn1 = new MetroFramework.Controls.MetroButton();
+            this.fileLocationMstTextBox1 = new MetroFramework.Controls.MetroTextBox();
+            this.progressBar1 = new MetroFramework.Controls.MetroProgressBar();
             this.osComboBox = new MetroFramework.Controls.MetroComboBox();
             this.brwMsiLabel = new MetroFramework.Controls.MetroLabel();
             this.pkgrNameTextBox = new MetroFramework.Controls.MetroTextBox();
@@ -59,7 +64,8 @@
             this.metroGrid1 = new MetroFramework.Controls.MetroGrid();
             this.loadMstTextBox = new MetroFramework.Controls.MetroTextBox();
             this.loadMstButton = new MetroFramework.Controls.MetroButton();
-            this.progressBar1 = new MetroFramework.Controls.MetroProgressBar();
+            this.ofd3 = new System.Windows.Forms.OpenFileDialog();
+            this.ofd4 = new System.Windows.Forms.OpenFileDialog();
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -104,14 +110,18 @@
             this.metroTabControl1.ItemSize = new System.Drawing.Size(70, 37);
             this.metroTabControl1.Location = new System.Drawing.Point(22, 92);
             this.metroTabControl1.Name = "metroTabControl1";
-            this.metroTabControl1.SelectedIndex = 1;
-            this.metroTabControl1.Size = new System.Drawing.Size(338, 466);
+            this.metroTabControl1.SelectedIndex = 0;
+            this.metroTabControl1.Size = new System.Drawing.Size(355, 509);
             this.metroTabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.metroTabControl1.TabIndex = 45;
             this.metroTabControl1.UseSelectable = true;
             // 
             // metroTabPage1
             // 
+            this.metroTabPage1.Controls.Add(this.editMstCheckBox);
+            this.metroTabPage1.Controls.Add(this.loadMstLabel1);
+            this.metroTabPage1.Controls.Add(this.loadMstBtn1);
+            this.metroTabPage1.Controls.Add(this.fileLocationMstTextBox1);
             this.metroTabPage1.Controls.Add(this.progressBar1);
             this.metroTabPage1.Controls.Add(this.osComboBox);
             this.metroTabPage1.Controls.Add(this.brwMsiLabel);
@@ -136,36 +146,112 @@
             this.metroTabPage1.HorizontalScrollbarSize = 10;
             this.metroTabPage1.Location = new System.Drawing.Point(4, 41);
             this.metroTabPage1.Name = "metroTabPage1";
-            this.metroTabPage1.Size = new System.Drawing.Size(330, 421);
+            this.metroTabPage1.Size = new System.Drawing.Size(347, 464);
             this.metroTabPage1.TabIndex = 0;
             this.metroTabPage1.Text = "Project";
             this.metroTabPage1.VerticalScrollbarBarColor = true;
             this.metroTabPage1.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage1.VerticalScrollbarSize = 10;
             // 
+            // editMstCheckBox
+            // 
+            this.editMstCheckBox.AutoSize = true;
+            this.editMstCheckBox.Location = new System.Drawing.Point(140, 90);
+            this.editMstCheckBox.Name = "editMstCheckBox";
+            this.editMstCheckBox.Size = new System.Drawing.Size(69, 15);
+            this.editMstCheckBox.TabIndex = 66;
+            this.editMstCheckBox.Text = "Edit MST";
+            this.editMstCheckBox.UseSelectable = true;
+            this.editMstCheckBox.CheckedChanged += new System.EventHandler(this.editMstCheckBox_CheckedChanged);
+            // 
+            // loadMstLabel1
+            // 
+            this.loadMstLabel1.AutoSize = true;
+            this.loadMstLabel1.Location = new System.Drawing.Point(0, 56);
+            this.loadMstLabel1.Name = "loadMstLabel1";
+            this.loadMstLabel1.Size = new System.Drawing.Size(73, 19);
+            this.loadMstLabel1.TabIndex = 65;
+            this.loadMstLabel1.Text = "Select MST";
+            // 
+            // loadMstBtn1
+            // 
+            this.loadMstBtn1.Enabled = false;
+            this.loadMstBtn1.Location = new System.Drawing.Point(299, 52);
+            this.loadMstBtn1.Name = "loadMstBtn1";
+            this.loadMstBtn1.Size = new System.Drawing.Size(35, 23);
+            this.loadMstBtn1.TabIndex = 64;
+            this.loadMstBtn1.Text = "...";
+            this.loadMstBtn1.UseSelectable = true;
+            this.loadMstBtn1.Click += new System.EventHandler(this.loadMstBtn1_Click);
+            // 
+            // fileLocationMstTextBox1
+            // 
+            this.fileLocationMstTextBox1.BackColor = System.Drawing.Color.Gainsboro;
+            // 
+            // 
+            // 
+            this.fileLocationMstTextBox1.CustomButton.Image = null;
+            this.fileLocationMstTextBox1.CustomButton.Location = new System.Drawing.Point(131, 1);
+            this.fileLocationMstTextBox1.CustomButton.Name = "";
+            this.fileLocationMstTextBox1.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.fileLocationMstTextBox1.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.fileLocationMstTextBox1.CustomButton.TabIndex = 1;
+            this.fileLocationMstTextBox1.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.fileLocationMstTextBox1.CustomButton.UseSelectable = true;
+            this.fileLocationMstTextBox1.CustomButton.Visible = false;
+            this.fileLocationMstTextBox1.Enabled = false;
+            this.fileLocationMstTextBox1.Lines = new string[0];
+            this.fileLocationMstTextBox1.Location = new System.Drawing.Point(140, 52);
+            this.fileLocationMstTextBox1.MaxLength = 32767;
+            this.fileLocationMstTextBox1.Name = "fileLocationMstTextBox1";
+            this.fileLocationMstTextBox1.PasswordChar = '\0';
+            this.fileLocationMstTextBox1.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.fileLocationMstTextBox1.SelectedText = "";
+            this.fileLocationMstTextBox1.SelectionLength = 0;
+            this.fileLocationMstTextBox1.SelectionStart = 0;
+            this.fileLocationMstTextBox1.ShortcutsEnabled = true;
+            this.fileLocationMstTextBox1.Size = new System.Drawing.Size(153, 23);
+            this.fileLocationMstTextBox1.TabIndex = 63;
+            this.fileLocationMstTextBox1.UseCustomBackColor = true;
+            this.fileLocationMstTextBox1.UseSelectable = true;
+            this.fileLocationMstTextBox1.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.fileLocationMstTextBox1.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(0, 445);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(344, 5);
+            this.progressBar1.TabIndex = 46;
+            this.progressBar1.Visible = false;
+            // 
             // osComboBox
             // 
+            this.osComboBox.BackColor = System.Drawing.Color.Gainsboro;
             this.osComboBox.Enabled = false;
             this.osComboBox.FormattingEnabled = true;
             this.osComboBox.ItemHeight = 23;
             this.osComboBox.Items.AddRange(new object[] {
             "32bit + 64bit",
             "64bit"});
-            this.osComboBox.Location = new System.Drawing.Point(133, 303);
+            this.osComboBox.Location = new System.Drawing.Point(140, 328);
             this.osComboBox.Name = "osComboBox";
             this.osComboBox.PromptText = "Select OS Architecture";
             this.osComboBox.Size = new System.Drawing.Size(194, 29);
             this.osComboBox.TabIndex = 51;
+            this.osComboBox.UseCustomBackColor = true;
             this.osComboBox.UseSelectable = true;
             // 
             // brwMsiLabel
             // 
             this.brwMsiLabel.AutoSize = true;
-            this.brwMsiLabel.Location = new System.Drawing.Point(0, 27);
+            this.brwMsiLabel.Location = new System.Drawing.Point(0, 26);
             this.brwMsiLabel.Name = "brwMsiLabel";
-            this.brwMsiLabel.Size = new System.Drawing.Size(93, 19);
+            this.brwMsiLabel.Size = new System.Drawing.Size(69, 19);
             this.brwMsiLabel.TabIndex = 59;
-            this.brwMsiLabel.Text = "Select MSI File";
+            this.brwMsiLabel.Text = "Select MSI";
             // 
             // pkgrNameTextBox
             // 
@@ -182,7 +268,7 @@
             this.pkgrNameTextBox.CustomButton.UseSelectable = true;
             this.pkgrNameTextBox.CustomButton.Visible = false;
             this.pkgrNameTextBox.Lines = new string[0];
-            this.pkgrNameTextBox.Location = new System.Drawing.Point(133, 235);
+            this.pkgrNameTextBox.Location = new System.Drawing.Point(140, 283);
             this.pkgrNameTextBox.MaxLength = 32767;
             this.pkgrNameTextBox.Name = "pkgrNameTextBox";
             this.pkgrNameTextBox.PasswordChar = '\0';
@@ -212,7 +298,7 @@
             this.pkgVerTextBox.CustomButton.UseSelectable = true;
             this.pkgVerTextBox.CustomButton.Visible = false;
             this.pkgVerTextBox.Lines = new string[0];
-            this.pkgVerTextBox.Location = new System.Drawing.Point(133, 206);
+            this.pkgVerTextBox.Location = new System.Drawing.Point(140, 254);
             this.pkgVerTextBox.MaxLength = 32767;
             this.pkgVerTextBox.Name = "pkgVerTextBox";
             this.pkgVerTextBox.PasswordChar = '\0';
@@ -242,7 +328,7 @@
             this.pkgNameTextBox.CustomButton.UseSelectable = true;
             this.pkgNameTextBox.CustomButton.Visible = false;
             this.pkgNameTextBox.Lines = new string[0];
-            this.pkgNameTextBox.Location = new System.Drawing.Point(133, 177);
+            this.pkgNameTextBox.Location = new System.Drawing.Point(140, 225);
             this.pkgNameTextBox.MaxLength = 32767;
             this.pkgNameTextBox.Name = "pkgNameTextBox";
             this.pkgNameTextBox.PasswordChar = '\0';
@@ -272,7 +358,7 @@
             this.appVerTextBox.CustomButton.UseSelectable = true;
             this.appVerTextBox.CustomButton.Visible = false;
             this.appVerTextBox.Lines = new string[0];
-            this.appVerTextBox.Location = new System.Drawing.Point(133, 135);
+            this.appVerTextBox.Location = new System.Drawing.Point(140, 181);
             this.appVerTextBox.MaxLength = 32767;
             this.appVerTextBox.Name = "appVerTextBox";
             this.appVerTextBox.PasswordChar = '\0';
@@ -302,7 +388,7 @@
             this.appNameTextBox.CustomButton.UseSelectable = true;
             this.appNameTextBox.CustomButton.Visible = false;
             this.appNameTextBox.Lines = new string[0];
-            this.appNameTextBox.Location = new System.Drawing.Point(133, 106);
+            this.appNameTextBox.Location = new System.Drawing.Point(140, 152);
             this.appNameTextBox.MaxLength = 32767;
             this.appNameTextBox.Name = "appNameTextBox";
             this.appNameTextBox.PasswordChar = '\0';
@@ -334,7 +420,7 @@
             this.pimsIdTextBox.CustomButton.UseSelectable = true;
             this.pimsIdTextBox.CustomButton.Visible = false;
             this.pimsIdTextBox.Lines = new string[0];
-            this.pimsIdTextBox.Location = new System.Drawing.Point(133, 77);
+            this.pimsIdTextBox.Location = new System.Drawing.Point(140, 123);
             this.pimsIdTextBox.MaxLength = 32767;
             this.pimsIdTextBox.Name = "pimsIdTextBox";
             this.pimsIdTextBox.PasswordChar = '\0';
@@ -351,6 +437,7 @@
             // 
             // fileLocationTextBox1
             // 
+            this.fileLocationTextBox1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             // 
             // 
             // 
@@ -364,7 +451,7 @@
             this.fileLocationTextBox1.CustomButton.UseSelectable = true;
             this.fileLocationTextBox1.CustomButton.Visible = false;
             this.fileLocationTextBox1.Lines = new string[0];
-            this.fileLocationTextBox1.Location = new System.Drawing.Point(133, 23);
+            this.fileLocationTextBox1.Location = new System.Drawing.Point(140, 22);
             this.fileLocationTextBox1.MaxLength = 32767;
             this.fileLocationTextBox1.Name = "fileLocationTextBox1";
             this.fileLocationTextBox1.PasswordChar = '\0';
@@ -375,24 +462,26 @@
             this.fileLocationTextBox1.ShortcutsEnabled = true;
             this.fileLocationTextBox1.Size = new System.Drawing.Size(153, 23);
             this.fileLocationTextBox1.TabIndex = 0;
+            this.fileLocationTextBox1.UseCustomBackColor = true;
             this.fileLocationTextBox1.UseSelectable = true;
             this.fileLocationTextBox1.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.fileLocationTextBox1.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
             // browseBtn1
             // 
-            this.browseBtn1.Location = new System.Drawing.Point(292, 23);
+            this.browseBtn1.Location = new System.Drawing.Point(299, 22);
             this.browseBtn1.Name = "browseBtn1";
             this.browseBtn1.Size = new System.Drawing.Size(35, 23);
             this.browseBtn1.TabIndex = 1;
             this.browseBtn1.Text = "...";
+            this.browseBtn1.UseCustomBackColor = true;
             this.browseBtn1.UseSelectable = true;
             this.browseBtn1.Click += new System.EventHandler(this.browseBtn1_Click);
             // 
             // customMsiCheckBox
             // 
             this.customMsiCheckBox.AutoSize = true;
-            this.customMsiCheckBox.Location = new System.Drawing.Point(133, 273);
+            this.customMsiCheckBox.Location = new System.Drawing.Point(246, 90);
             this.customMsiCheckBox.Name = "customMsiCheckBox";
             this.customMsiCheckBox.Size = new System.Drawing.Size(88, 15);
             this.customMsiCheckBox.TabIndex = 8;
@@ -403,7 +492,7 @@
             // pkgrNameLabel
             // 
             this.pkgrNameLabel.AutoSize = true;
-            this.pkgrNameLabel.Location = new System.Drawing.Point(0, 239);
+            this.pkgrNameLabel.Location = new System.Drawing.Point(0, 288);
             this.pkgrNameLabel.Name = "pkgrNameLabel";
             this.pkgrNameLabel.Size = new System.Drawing.Size(102, 19);
             this.pkgrNameLabel.Style = MetroFramework.MetroColorStyle.Blue;
@@ -413,7 +502,7 @@
             // pkgVerLabel
             // 
             this.pkgVerLabel.AutoSize = true;
-            this.pkgVerLabel.Location = new System.Drawing.Point(0, 210);
+            this.pkgVerLabel.Location = new System.Drawing.Point(0, 259);
             this.pkgVerLabel.Name = "pkgVerLabel";
             this.pkgVerLabel.Size = new System.Drawing.Size(103, 19);
             this.pkgVerLabel.TabIndex = 57;
@@ -422,7 +511,7 @@
             // pkgNameLabel
             // 
             this.pkgNameLabel.AutoSize = true;
-            this.pkgNameLabel.Location = new System.Drawing.Point(0, 177);
+            this.pkgNameLabel.Location = new System.Drawing.Point(0, 226);
             this.pkgNameLabel.Name = "pkgNameLabel";
             this.pkgNameLabel.Size = new System.Drawing.Size(97, 19);
             this.pkgNameLabel.TabIndex = 56;
@@ -431,7 +520,7 @@
             // appVerLabel
             // 
             this.appVerLabel.AutoSize = true;
-            this.appVerLabel.Location = new System.Drawing.Point(0, 139);
+            this.appVerLabel.Location = new System.Drawing.Point(0, 186);
             this.appVerLabel.Name = "appVerLabel";
             this.appVerLabel.Size = new System.Drawing.Size(121, 19);
             this.appVerLabel.TabIndex = 55;
@@ -440,7 +529,7 @@
             // appNameLabel
             // 
             this.appNameLabel.AutoSize = true;
-            this.appNameLabel.Location = new System.Drawing.Point(0, 110);
+            this.appNameLabel.Location = new System.Drawing.Point(0, 157);
             this.appNameLabel.Name = "appNameLabel";
             this.appNameLabel.Size = new System.Drawing.Size(115, 19);
             this.appNameLabel.TabIndex = 54;
@@ -449,7 +538,7 @@
             // pimsIdLabel
             // 
             this.pimsIdLabel.AutoSize = true;
-            this.pimsIdLabel.Location = new System.Drawing.Point(0, 81);
+            this.pimsIdLabel.Location = new System.Drawing.Point(0, 128);
             this.pimsIdLabel.Name = "pimsIdLabel";
             this.pimsIdLabel.Size = new System.Drawing.Size(55, 19);
             this.pimsIdLabel.TabIndex = 53;
@@ -458,7 +547,7 @@
             // createBtn
             // 
             this.createBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.createBtn.Location = new System.Drawing.Point(133, 338);
+            this.createBtn.Location = new System.Drawing.Point(140, 381);
             this.createBtn.Name = "createBtn";
             this.createBtn.Size = new System.Drawing.Size(194, 44);
             this.createBtn.TabIndex = 10;
@@ -479,9 +568,9 @@
             this.metroTabPage2.HorizontalScrollbarSize = 10;
             this.metroTabPage2.Location = new System.Drawing.Point(4, 41);
             this.metroTabPage2.Name = "metroTabPage2";
-            this.metroTabPage2.Size = new System.Drawing.Size(330, 421);
+            this.metroTabPage2.Size = new System.Drawing.Size(347, 464);
             this.metroTabPage2.TabIndex = 1;
-            this.metroTabPage2.Text = "QC";
+            this.metroTabPage2.Text = "MSI Checks";
             this.metroTabPage2.VerticalScrollbarBarColor = true;
             this.metroTabPage2.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage2.VerticalScrollbarSize = 10;
@@ -533,41 +622,41 @@
             this.metroGrid1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.metroGrid1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.metroGrid1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.metroGrid1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.metroGrid1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
             this.metroGrid1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.metroGrid1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Property,
             this.Value,
             this.Status});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(136)))), ((int)(((byte)(136)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.metroGrid1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(136)))), ((int)(((byte)(136)))));
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.metroGrid1.DefaultCellStyle = dataGridViewCellStyle14;
             this.metroGrid1.EnableHeadersVisualStyles = false;
             this.metroGrid1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.metroGrid1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.metroGrid1.Location = new System.Drawing.Point(4, 96);
+            this.metroGrid1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.metroGrid1.Location = new System.Drawing.Point(4, 95);
             this.metroGrid1.Name = "metroGrid1";
             this.metroGrid1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle15;
             this.metroGrid1.RowHeadersVisible = false;
             this.metroGrid1.RowHeadersWidth = 4;
             this.metroGrid1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
@@ -576,7 +665,6 @@
             this.metroGrid1.TabIndex = 5;
             this.metroGrid1.UseCustomBackColor = true;
             this.metroGrid1.UseCustomForeColor = true;
-            this.metroGrid1.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.metroGrid1_CellMouseEnter);
             // 
             // loadMstTextBox
             // 
@@ -618,15 +706,13 @@
             this.loadMstButton.UseSelectable = true;
             this.loadMstButton.Click += new System.EventHandler(this.metroButton1_Click);
             // 
-            // progressBar1
+            // ofd3
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(0, 408);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(327, 5);
-            this.progressBar1.TabIndex = 46;
-            this.progressBar1.Visible = false;
+            this.ofd3.FileName = "ofd3";
+            // 
+            // ofd4
+            // 
+            this.ofd4.FileName = "ofd4";
             // 
             // Property
             // 
@@ -644,14 +730,14 @@
             // 
             this.Status.HeaderText = "Status";
             this.Status.Name = "Status";
-            this.Status.Width = 60;
+            this.Status.Width = 50;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(389, 593);
+            this.ClientSize = new System.Drawing.Size(391, 624);
             this.Controls.Add(this.metroTabControl1);
             this.Controls.Add(this.pictureBox1);
             this.DisplayHeader = false;
@@ -706,6 +792,12 @@
         private MetroFramework.Controls.MetroTextBox loadMsiTextBox;
         private MetroFramework.Controls.MetroButton loadMsiButton;
         private MetroFramework.Controls.MetroProgressBar progressBar1;
+        private MetroFramework.Controls.MetroLabel loadMstLabel1;
+        private MetroFramework.Controls.MetroButton loadMstBtn1;
+        private MetroFramework.Controls.MetroTextBox fileLocationMstTextBox1;
+        private System.Windows.Forms.OpenFileDialog ofd3;
+        private System.Windows.Forms.OpenFileDialog ofd4;
+        private MetroFramework.Controls.MetroCheckBox editMstCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;

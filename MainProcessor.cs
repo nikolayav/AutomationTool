@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutomationTool {
     class MainProcessorEventArgs : EventArgs {
@@ -13,8 +9,6 @@ namespace AutomationTool {
         public MainProcessorEventArgs(int progress) {
             _progress = progress;
         }
-        
-        
     }
         class MainProcessor {
         MsiEditor _msiEditor;
@@ -58,13 +52,17 @@ namespace AutomationTool {
 
             _adm.createFolders(String.Format("{0}_{1}", _proj.PkgName, _proj.PkgVer));
 
-            if (!_proj.isCustomMsi) {
+            if (!_proj.isCustomMsi && !_proj.isEditMst) {
                 _creator.CreateMst(_proj);
-                _creator.CreateXML(_proj);
+                _creator.CreateXLSX(_proj);
                 _adm.CreateInstallUninstallVbs(_proj, false, String.Format("{0}_{1}_install.vbs", _proj.PkgName, _proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", _proj.PkgName, _proj.PkgVer));
-            } else {
+            } else if (_proj.isCustomMsi && !_proj.isEditMst) {
                 _creator.GenerateCustomMsi(_proj, _proj.is32bit);
-                _creator.CreateXML(_proj);
+                _creator.CreateXLSX(_proj);
+                _adm.CreateInstallUninstallVbs(_proj, true, String.Format("{0}_{1}_install.vbs", _proj.PkgName, _proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", _proj.PkgName, _proj.PkgVer));
+            } else if (!_proj.isCustomMsi && _proj.isEditMst) {
+                _creator.EditMst(_proj);
+                _creator.CreateXLSX(_proj);
                 _adm.CreateInstallUninstallVbs(_proj, true, String.Format("{0}_{1}_install.vbs", _proj.PkgName, _proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", _proj.PkgName, _proj.PkgVer));
             }
         }

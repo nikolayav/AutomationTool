@@ -1,24 +1,24 @@
 ﻿using Microsoft.Deployment.WindowsInstaller;
 using Microsoft.Office.Interop.Excel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
+
 
 namespace AutomationTool {
     class Creator {
         MsiEditor msiEditor;
         Administrator adm;
         Logger logger;
-        public Creator() {
-
-        }
+        public Creator( ) {}
 
         public MsiEditor MsiEditor { get => msiEditor; set => msiEditor = value; }
         public Administrator Adm { get => adm; set => adm = value; }
         public Logger Logger { get => logger; set => logger = value; }
 
-        public void CreateXML(ProjectInfo proj) {
+        public void CreateXLSX(ProjectInfo proj) {
             string newXLFile = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", adm.ProjectFolder, "Doku", String.Format("{0}_{1}_1.xlsx", proj.PkgName, proj.PkgVer));
 
             if (File.Exists(@"templates\template_excel.xlsx")) {
@@ -49,6 +49,7 @@ namespace AutomationTool {
 
             try {
                 Excel.Worksheet xlSheet = wb.Sheets["Universal"];
+
                 xlSheet.Activate();
                 xlSheet.Cells[5, 3].Value = proj.PimsId;
                 xlSheet.Cells[6, 3].Value = proj.PkgName;
@@ -143,9 +144,9 @@ namespace AutomationTool {
                         MsiEditor.Property_AddOrUpdate("BMW_Package_Author", proj.AuthorName, db);
                         MsiEditor.Property_AddOrUpdate("BMW_PackageName", proj.PkgName, db);
                         MsiEditor.Property_AddOrUpdate("BMW_PackageVersion", proj.PkgVer, db);
-                        MsiEditor.Property_AddOrUpdate("Manufacturer", "BMW Package Factory", db);
+                        //MsiEditor.Property_AddOrUpdate("Manufacturer", "BMW Package Factory", db);
                         MsiEditor.Property_AddOrUpdate("MSIRESTARTMANAGERCONTROL", "Disable", db);
-                        MsiEditor.Property_AddOrUpdate("ProductName", proj.AppName, db);
+                        //MsiEditor.Property_AddOrUpdate("ProductName", proj.AppName, db);
                         MsiEditor.Property_AddOrUpdate("ProductVersion", proj.AppVer, db);
                         MsiEditor.Property_AddOrUpdate("PROMPTROLLBACKCOST", "D", db);
                         MsiEditor.Property_AddOrUpdate("REBOOT", "ReallySuppress", db);
@@ -279,6 +280,115 @@ namespace AutomationTool {
             }
             ReportProgress();
         }
+
+        public void EditMst(ProjectInfo proj) {
+
+            Logger.Log("File:     Extracting .reg info...");
+
+            string auditKeyPath = "";
+            var regFileLines = File.ReadAllLines(@"templates\template_auditkey.reg");
+            Dictionary<string, string> regDict = new Dictionary<string, string>();
+
+            bool startReading = false;
+            foreach (string line in regFileLines) {
+                if (!startReading) {
+                    if (line.StartsWith("[")) {
+                        if (line.Contains("[HKEY_LOCAL_MACHINE\\")) {
+                            auditKeyPath = line;
+                            auditKeyPath = auditKeyPath.Replace("[HKEY_LOCAL_MACHINE\\", "").Replace("]]", "]");
+                        }
+                        startReading = true;
+                    }
+                } else {
+                    string[] lineSplit = line.Replace("\"", "").Split('=');
+                    if (lineSplit.Length == 2) {
+                        regDict.Add(lineSplit[0], lineSplit[1]);
+                    }
+                }
+            }
+
+            ReportProgress();
+            string referenceDb = Adm.FullMsiPath;
+            string tempDb = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", this.Adm.ProjectFolder, "Work", String.Format("{0}.msi_tmp1", proj.MsiName));
+            string transform = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", this.Adm.ProjectFolder, "Work", String.Format("{0}_{1}.mst", proj.PkgName, proj.PkgVer));
+            const string auditComponentx86 = "BMW_Client_Info";
+            const string auditComponentx64 = "BMW_Client_Infox64";
+
+            Adm.CheckIfFileExistsAndRenameOldFile(transform);
+            Adm.CheckIfFileExistsAndRenameOldFile(tempDb);
+
+            Logger.Log(String.Format("System:     Creating {0} and {1} files...", Path.GetFileName(transform), Path.GetFileName(tempDb)));
+
+            File.Copy(referenceDb, tempDb, true);
+
+            try {
+                using (var origDatabase = new Database(referenceDb, DatabaseOpenMode.ReadOnly)) {
+                    using (var db = new Database(tempDb, DatabaseOpenMode.Direct)) {
+                        db.ApplyTransform(proj.EditMstPath);
+
+                        MsiEditor.UpdateFeatureAssociations(db, proj, proj.FeatureName, proj.FeatureName, "0", "1", "INSTALLDIR", "48");
+                        string oldFeature = msiEditor.FindExistingFeature(db, proj);
+
+                        ReportProgress();
+                        MsiEditor.Component_AddOrUpdate(db, auditComponentx86, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName);
+                        MsiEditor.Component_AddOrUpdate(db, auditComponentx64, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName);
+
+                        ReportProgress();
+                        
+                        msiEditor.dropRegs(db, auditKeyPath);
+                        
+                       foreach (KeyValuePair<string, string> kvp in regDict) {
+                            if (kvp.Key.Equals("MSIPackageName")) {
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), auditComponentx64);
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), auditComponentx86);
+                            } else {
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, kvp.Value, auditComponentx64);
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, kvp.Value, auditComponentx86);
+                            }
+                        }
+
+                        ReportProgress();
+                        MsiEditor.Property_AddOrUpdate("ALLUSERS", "1", db);
+                        MsiEditor.Property_AddOrUpdate("ARPNOMODIFY", "1", db);
+                        MsiEditor.Property_AddOrUpdate("ARPNOREMOVE", "1", db);
+                        MsiEditor.Property_AddOrUpdate("ARPNOREPAIR", "1", db);
+                        MsiEditor.Property_AddOrUpdate("BMW_Package_Author", proj.AuthorName, db);
+                        MsiEditor.Property_AddOrUpdate("BMW_PackageName", proj.PkgName, db);
+                        MsiEditor.Property_AddOrUpdate("BMW_PackageVersion", proj.PkgVer, db);
+                        //MsiEditor.Property_AddOrUpdate("Manufacturer", "BMW Package Factory", db);
+                        MsiEditor.Property_AddOrUpdate("MSIRESTARTMANAGERCONTROL", "Disable", db);
+                        //MsiEditor.Property_AddOrUpdate("ProductName", proj.AppName, db);
+                        MsiEditor.Property_AddOrUpdate("ProductVersion", proj.AppVer, db);
+                        MsiEditor.Property_AddOrUpdate("PROMPTROLLBACKCOST", "D", db);
+                        MsiEditor.Property_AddOrUpdate("REBOOT", "ReallySuppress", db);
+                        MsiEditor.Property_AddOrUpdate("REBOOTPROMPT", "S", db);
+                        ReportProgress();
+                        proj.ProductCode = MsiEditor.GetProductAndUpgradeCodes(db, "ProductCode");
+                        proj.UpgradeCode = MsiEditor.GetProductAndUpgradeCodes(db, "UpgradeCode");
+
+                        Logger.Log("Transform:     Editing summary information stream...");
+
+                        // Edit summary info stream
+                        db.SummaryInfo.Title = proj.AppName;
+                        db.SummaryInfo.Subject = proj.AppName;
+                        db.SummaryInfo.Comments = proj.Comments;
+                        db.SummaryInfo.Author = proj.AuthorName;
+                        ReportProgress();
+                        Logger.Log(String.Format("Transform:     Saving {0} file...", Path.GetFileName(transform)));
+
+                        db.GenerateTransform(origDatabase, transform);
+                        db.Commit();
+                        db.CreateTransformSummaryInfo(origDatabase, transform, TransformErrors.None, TransformValidations.None);
+                    }
+                }
+            } catch {
+                throw;
+            } finally {
+                File.Delete(tempDb);
+            }
+            ReportProgress();
+        }
+
         public int MaxProgressValue { get => 9; }
         // Declare the delegate (if using non-generic pattern).
         public delegate void TickProgress(object sender, EventArgs e);

@@ -12,11 +12,14 @@
         string upgradeCode;
         string featureName;
         string comments;
+        string editMstPath;
         public bool is32bit;
         public bool isCustomMsi;
+        public bool isEditMst;
 
         public ProjectInfo(string folderPath, string msiName, string pimsId, string appName, string appVer,
-            string pkgName, string pkgVer, string authorName, string productCode, string upgradeCode, string featureName, string comments, bool is32bit, bool isCustomMsi) {
+            string pkgName, string pkgVer, string authorName, string productCode, string upgradeCode, string featureName, 
+            string comments, bool is32bit, bool isCustomMsi, bool isEditMst, string editMstPath) {
             this.folderPath = folderPath;
             this.msiName = msiName;
             this.pimsId = pimsId;
@@ -31,7 +34,11 @@
             this.comments = comments;
             this.is32bit = is32bit;
             this.isCustomMsi = isCustomMsi;
+            this.isEditMst = isEditMst;
+            this.editMstPath = editMstPath;
         }
+
+        public string EditMstPath { get => editMstPath; set => editMstPath = value; }
         public string FolderPath { get => folderPath; set => folderPath = value; }
         public string MsiName { get => msiName; set => msiName = value; }
         public string PimsId { get => pimsId; set => pimsId = value; }

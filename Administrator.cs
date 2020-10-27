@@ -8,9 +8,11 @@ namespace AutomationTool {
         string fullMsiPath;
         Logger logger;
 
-        public Administrator() {
-           
-        }
+        public string ProjectFolder { get => projectFolder; set => projectFolder = value; }
+        public string FullMsiPath { get => fullMsiPath; set => fullMsiPath = value; }
+        public Logger Logger { get => logger; set => logger = value; }
+
+        public Administrator() {}
         public void CheckIfFileExistsAndRenameOldFile(string filePath) {
             if (File.Exists(filePath)) {
                 bool isRenamed = false;
@@ -28,16 +30,12 @@ namespace AutomationTool {
                 }
             }
         }
-        public string ProjectFolder { get => projectFolder; set => projectFolder = value; }
-        public string FullMsiPath { get => fullMsiPath; set => fullMsiPath = value; }
-        public Logger Logger { get => logger; set => logger = value; }
-
-
 
         public void CreateInstallUninstallVbs(ProjectInfo proj, bool isCustomMsi, string installvbs, string uninstallvbs) {
             this.CheckIfFileExistsAndRenameOldFile(Path.Combine(this.ProjectFolder, "Work", installvbs));
             this.CheckIfFileExistsAndRenameOldFile(Path.Combine(this.ProjectFolder, "Work", uninstallvbs));
 
+            //Copying VBS files and replacing the proper lines
             Encoding utf8WithoutBom = new UTF8Encoding(false);
             var vbsFileLines = File.ReadAllLines(@"templates\template_install.vbs");
             Logger.Log(String.Format("System:     Creating {0}...", installvbs));
