@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-
-
 namespace AutomationTool {
     class Creator {
         MsiEditor msiEditor;
@@ -213,8 +211,8 @@ namespace AutomationTool {
 
                         foreach (KeyValuePair<string, string> kvp in regDict) {
                             if (kvp.Key.Equals("MSIPackageName")) {
-                                msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), auditComponentx64);
-                                msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), auditComponentx86);
+                                msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, String.Format("{0}_{1}.msi", proj.PkgName, proj.PkgVer), auditComponentx64);
+                                msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, String.Format("{0}_{1}.msi", proj.PkgName, proj.PkgVer), auditComponentx86);
                             } else {
                                 msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, kvp.Value, auditComponentx64);
                                 msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", auditKeyPath, kvp.Key, kvp.Value, auditComponentx86);

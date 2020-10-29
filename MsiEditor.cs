@@ -7,9 +7,9 @@ using System.Text.RegularExpressions;
 namespace AutomationTool {
     class MsiEditor {
         Logger logger;
+        public Logger Logger { get => logger; set => logger = value; }
         public MsiEditor() {}
 
-        public Logger Logger { get => logger; set => logger = value; }
         public void Feature_AddOrUpdate(Database db, string feature, string title, string display, string level, string directory_, string attributes) {
             logger.Log(String.Format("Transform:     Creating feature '{0}'...", feature));
 
@@ -24,7 +24,7 @@ namespace AutomationTool {
         public void Component_AddOrUpdate(Database db, string component, string componentId, string directory_, string attributes, string feature) {
             logger.Log(String.Format("Transform:     Creating component '{0}'", component));
 
-            IList featuresWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Component where Component = '{0}'", component));
+            IList featuresWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Component WHERE Component = '{0}'", component));
             if (featuresWithSameName.Count > 0) {
                 db.Execute(String.Format("UPDATE Component SET Component = '{0}', ComponentId = '{1}', Directory_ = '{2}', Attributes = '{3}' WHERE Component = '{0}'", component, componentId, directory_, attributes));
             } else {
@@ -109,7 +109,9 @@ namespace AutomationTool {
                     }
                 }
             }
-            if (guid.Equals("{00000000-0000-0000-0000-000000000000}", StringComparison.InvariantCultureIgnoreCase) || guid.Equals("{5F0C6514-2485-4FC8-8029-A1A7A2CFA768}", StringComparison.InvariantCultureIgnoreCase) || guid.Equals("{E8E3F922-E7E0-46F0-99C2-2AB0FFA6BDBF}", StringComparison.InvariantCultureIgnoreCase)) {
+            if (guid.Equals("{00000000-0000-0000-0000-000000000000}", StringComparison.InvariantCultureIgnoreCase) || 
+                guid.Equals("{5F0C6514-2485-4FC8-8029-A1A7A2CFA768}", StringComparison.InvariantCultureIgnoreCase) || 
+                guid.Equals("{E8E3F922-E7E0-46F0-99C2-2AB0FFA6BDBF}", StringComparison.InvariantCultureIgnoreCase)) {
                 return GenerateUniqueGuid(db, type);
             }
             return guid;
@@ -162,7 +164,7 @@ namespace AutomationTool {
 
             logger.Log(String.Format("Transform:     Creating feature '{0}'...", feature));
 
-            IList featuresWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Feature where Feature = '{0}'", feature));
+            IList featuresWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Feature WHERE Feature = '{0}'", feature));
             if (featuresWithSameName.Count == 0) {
                 db.Execute(String.Format("INSERT INTO `Feature` (Feature, Title, Display, Level, Directory_, Attributes) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')", feature, title, display, level, directory_, attributes));
             }
@@ -177,7 +179,7 @@ namespace AutomationTool {
 
         public IList<string> findComponentsAssociatedWithOldFeature(Database db, string oldFeature) {
             
-            IList<string> components = db.ExecuteStringQuery(String.Format("SELECT * FROM FeatureComponents where Feature_ = '{0}'", oldFeature));
+            IList<string> components = db.ExecuteStringQuery(String.Format("SELECT * FROM FeatureComponents WHERE Feature_ = '{0}'", oldFeature));
 
 
             return components;

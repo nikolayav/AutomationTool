@@ -32,6 +32,8 @@ namespace AutomationTool {
         Administrator adm = new Administrator();
         Creator creator = new Creator();
 
+
+
         private MainProcessor getMainProcessor() {
             logger.ConfigureLogging();
             msiEditor.Logger = logger;
@@ -40,11 +42,11 @@ namespace AutomationTool {
 
             ProjectInfo proj = new ProjectInfo("", "", pimsIdTextBox.Text, appNameTextBox.Text, appVerTextBox.Text, pkgNameTextBox.Text, pkgVerTextBox.Text,
                                                 String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC"), "", "", String.Format("{0}_{1}_{2}", "BMW", pkgNameTextBox.Text, pkgVerTextBox.Text), 
-                                                "", customMsiCheckBox.Checked, Is32bit(), editMstCheckBox.Checked, fileLocationMstTextBox1.Text);
+                                                "", Is32bit(), IsCustomMsi(), editMstCheckBox.Checked, fileLocationMstTextBox1.Text);
             if (proj.isCustomMsi) {
                 proj.FolderPath = "";
                 proj.MsiName = "";
-            } else if (!proj.isEditMst){
+            } else if (!proj.isEditMst && !proj.isCustomMsi){
                 proj.FolderPath = Path.GetDirectoryName(_fullMsiPath) + "\\";
                 proj.MsiName = Path.GetFileNameWithoutExtension(_fullMsiPath);
             } else {
@@ -160,7 +162,12 @@ namespace AutomationTool {
             return true;
         }
 
-
+        private bool IsCustomMsi() {
+            if (customMsiCheckBox.Checked) {
+                return true;
+            }
+            return false;
+        }
         private bool Is32bit() {
             if (osComboBox.Text.Equals("32bit + 64bit")) {
                 return true;
