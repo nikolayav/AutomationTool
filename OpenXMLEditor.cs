@@ -3,35 +3,114 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AutomationTool {
     public class OpenXMLEditor {
 
-        public void UpdateExcelSheetData(string filePath, string sheetName, uint rowIndex, string columnName, string newValue) {
+        public void UpdateExcelSheetData(string filePath, string sheetName, string newValue, string templateString) {
             using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(filePath, true)) {
 
-                AddUpdateCellValue(spreadSheet, sheetName, rowIndex, columnName, newValue);
+                AddUpdateCellValue(spreadSheet, sheetName, newValue, templateString);
                 spreadSheet.WorkbookPart.Workbook.CalculationProperties.ForceFullCalculation = true;
                 spreadSheet.WorkbookPart.Workbook.CalculationProperties.FullCalculationOnLoad = true;
             }
         }
 
-        public void AddUpdateCellValue(SpreadsheetDocument spreadSheet, string sheetname,
-         uint rowIndex, string columnName, string text) {
+        public void AddUpdateCellValue(SpreadsheetDocument spreadSheet, string sheetname, string text, string templateString) {
             // Opening document for editing            
-            WorksheetPart worksheetPart =
-             RetrieveSheetPartByName(spreadSheet, sheetname);
+            WorksheetPart worksheetPart = RetrieveSheetPartByName(spreadSheet, sheetname);
             if (worksheetPart != null) {
-                Cell cell = InsertCellInSheet(columnName, rowIndex, worksheetPart);
+                string[] cellIndex = GetIndexBySearch(templateString).Split(',');
+                string col = Convert.ToChar((Convert.ToInt32(cellIndex[1]) + 64)).ToString();
+                uint row = Convert.ToUInt32(cellIndex[0]);
+                Cell cell = InsertCellInSheet(col, row, worksheetPart);
                 cell.CellValue = new CellValue(text);
                 //cell datatype            
-                cell.DataType =
-                 new EnumValue<CellValues>(CellValues.String);
+                cell.DataType = new EnumValue<CellValues>(CellValues.String);
                 // Save the worksheet.            
                 worksheetPart.Worksheet.Save();
             }
         }
+
+        public WorkbookPart ImportExcel(string filePath) {
+            try {
+                string path = filePath;
+
+                using (FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                    MemoryStream m_ms = new MemoryStream();
+                    fs.CopyTo(m_ms);
+
+                    SpreadsheetDocument m_Doc = SpreadsheetDocument.Open(m_ms, false);
+
+                    return m_Doc.WorkbookPart;
+                }
+            } catch (Exception ex) {
+                System.Diagnostics.Trace.TraceError(ex.Message + ex.StackTrace);
+            }
+            return null;
+        }
+        public string GetIndexBySearch(string search) {
+
+            WorkbookPart workbookPart = ImportExcel("templates\\template_excel.xlsx");
+            var sheets = workbookPart.Workbook.Descendants<Sheet>();
+            Sheet sheet = sheets.Where(x => x.Name.Value == "Universal").FirstOrDefault();
+
+            string index = string.Empty;
+
+            if (sheet != null) {
+                var worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
+                var rows = worksheetPart.Worksheet.Descendants<Row>().ToList();
+
+                // Remove the header row
+                rows.RemoveAt(0);
+
+                foreach (var row in rows) {
+                    var cellss = row.Elements<Cell>().ToList();
+                    
+                    foreach (var cell in cellss) {
+                        if (!String.IsNullOrEmpty(cell.InnerText) && int.TryParse(cell.InnerText, out int n)) {
+                            var value = cell.InnerText;
+                            var stringTable = workbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                            value = stringTable.SharedStringTable.ElementAt(int.Parse(value)).InnerText;
+                            bool isFound = value.Trim().ToLower().Contains(search.Trim().ToLower());
+
+                            if (isFound) {
+                                index = $"{row.RowIndex},{GetColumnIndex(cell.CellReference)}";
+                                return index;
+                            }
+                        }
+
+                    }
+                }
+            }
+            if (String.IsNullOrEmpty(index)) {
+                throw new System.InvalidOperationException(String.Format("Value '{0}' is not present in the Excel file.", search));
+            }
+            return index;
+        }
+
+        private static int? GetColumnIndex(string cellReference) {
+            if (string.IsNullOrEmpty(cellReference)) {
+                return null;
+            }
+
+            string columnReference = Regex.Replace(cellReference.ToUpper(), @"[\d]", string.Empty);
+
+            int columnNumber = -1;
+            int mulitplier = 1;
+
+            foreach (char c in columnReference.ToCharArray().Reverse()) {
+                columnNumber += mulitplier * ((int)c - 64);
+
+                mulitplier = mulitplier * 26;
+            }
+
+            return columnNumber + 1;
+        }
+
         //retrieve sheetpart            
         public WorksheetPart RetrieveSheetPartByName(SpreadsheetDocument document,
          string sheetName) {

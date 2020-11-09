@@ -37,9 +37,9 @@ namespace AutomationTool {
 
             // Initialize File Target
             var fileTarget = new FileTarget("File Target") {
-                FileName = "Logs\\AutomationTool.log",
+                FileName = "Logs\\${cached:cached=true:Inner=${date:format=dd.MM.yyyy HH-mm}:CacheKey=${shortdate}}.log",
                 KeepFileOpen = false,
-                Layout = @"[${date}] ${message} ${exception: format=ToString}"
+                Layout = @"[${date:format=dd.MM.yyyy HH-mm-ss}] ${message} ${exception: format=ToString}"
             };
 
             // Initialize the AsyncWrapper for the fileTarget

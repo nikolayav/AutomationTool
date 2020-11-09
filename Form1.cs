@@ -32,14 +32,12 @@ namespace AutomationTool {
         Administrator adm = new Administrator();
         Creator creator = new Creator();
 
-
-
         private MainProcessor getMainProcessor() {
             logger.ConfigureLogging();
             msiEditor.Logger = logger;
             adm.Logger = logger;
             creator.Logger = logger;
-
+            
             ProjectInfo proj = new ProjectInfo("", "", pimsIdTextBox.Text, appNameTextBox.Text, appVerTextBox.Text, pkgNameTextBox.Text, pkgVerTextBox.Text,
                                                 String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC"), "", "", String.Format("{0}_{1}_{2}", "BMW", pkgNameTextBox.Text, pkgVerTextBox.Text), 
                                                 "", Is32bit(), IsCustomMsi(), editMstCheckBox.Checked, fileLocationMstTextBox1.Text);
@@ -110,14 +108,14 @@ namespace AutomationTool {
                 return false;
             }
 
-            if (!Regex.IsMatch(appNameTextBox.Text, "^[a-zA-Z0-9_. ]*$")) {
+            if (!Regex.IsMatch(appNameTextBox.Text, "^[a-zA-Z0-9-_. ]*$")) {
                 MessageBox.Show("Please, enter a proper Application Name(e.g.no special characters)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 appNameTextBox.Focus();
                 appNameTextBox.SelectAll();
                 return false;
             }
 
-            if (!Regex.IsMatch(appVerTextBox.Text, "^[a-zA-Z0-9_. ]*$")) {
+            if (!Regex.IsMatch(appVerTextBox.Text, "^[a-zA-Z0-9-_. ]*$")) {
                 MessageBox.Show("Please, enter a proper Application Version(e.g.no special characters)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 appVerTextBox.Focus();
                 appNameTextBox.SelectAll();
@@ -238,8 +236,19 @@ namespace AutomationTool {
             if (!ValidateInput(true)) {
                 return;
             }
+
+            if (String.IsNullOrEmpty(loadMsiTextBox.Text)) {
+                MessageBox.Show("Please, select Load MSI path", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (String.IsNullOrEmpty(loadMsiTextBox.Text)) {
+                MessageBox.Show("Please, select Load MST path", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Dictionary<string, string> propDict = new Dictionary<string, string>();
-            // add summary stream info
+            metroGrid1.Rows.Clear();
 
             
             string[] pkgrNameArr = pkgrNameTextBox.Text.Split(' ');
