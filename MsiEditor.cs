@@ -151,6 +151,8 @@ namespace AutomationTool {
                 Property_AddOrUpdate("ProductName", proj.AppName, db);
                 Property_AddOrUpdate("ProductVersion", proj.AppVer, db);
                 Property_AddOrUpdate("Manufacturer", "BMW Package Factory", db);
+                Property_AddOrUpdate("ProductCode", proj.ProductCode, db);
+                Property_AddOrUpdate("UpgradeCode", proj.UpgradeCode, db);
             }
 
         }
