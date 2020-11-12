@@ -56,7 +56,7 @@ namespace AutomationTool {
 
             IList existingProperties = db.ExecuteQuery("SELECT * FROM Property WHERE Property = '" + property + "'");
             if (existingProperties.Count > 0) {
-                logger.Log(String.Format("MSI:     Updating property {0} = {1}", property, value));
+                logger.Log(String.Format("MSI:     Updating property {0}={1}", property, value));
                 db.Execute(String.Format("UPDATE Property SET Value = '{0}' WHERE Property = '{1}'", value, property));
             } else {
                 logger.Log(String.Format("MSI:     Creating property {0}={1}", property, value));

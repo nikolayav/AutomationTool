@@ -122,7 +122,7 @@ namespace AutomationTool {
                 return false;
             }
 
-            if (!Regex.IsMatch(pkgNameTextBox.Text, "^[a-z_]*$")) {
+            if (!Regex.IsMatch(pkgNameTextBox.Text, "^[a-z0-9_]*$")) {
                 MessageBox.Show("Please, enter a proper Package Name (e.g. bmw_sample_i_i", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 pkgNameTextBox.Focus();
                 pkgNameTextBox.SelectAll();
