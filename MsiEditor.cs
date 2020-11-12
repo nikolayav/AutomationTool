@@ -21,25 +21,46 @@ namespace AutomationTool {
             }
         }
 
-        public void Component_AddOrUpdate(Database db, string component, string componentId, string directory_, string attributes, string feature) {
+        public void Component_AddOrUpdate(Database db, string component, string componentId, string directory_, string attributes, string feature, string condition) {
 
             IList componentsWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Component WHERE Component = '{0}'", component));
             if (componentsWithSameName.Count > 0) { 
                 logger.Log(String.Format("MSI:     Updating component '{0}'", component));
-                db.Execute(String.Format("UPDATE Component SET ComponentId = '{0}', Directory_ = '{1}', Attributes = '{2}' WHERE Component = '{3}'", componentId, directory_, attributes, component));
+                db.Execute(String.Format("UPDATE Component SET ComponentId = '{0}', Directory_ = '{1}', Attributes = '{2}', Condition = '{3}' WHERE Component = '{4}'", componentId, directory_, attributes, condition, component));
             } else {
                 logger.Log(String.Format("MSI:     Creating component '{0}'", component));
-                db.Execute(String.Format("INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`) VALUES ('{0}', '{1}', '{2}', '{3}')", component, componentId, directory_, attributes));
+                db.Execute(String.Format("INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `Condition`) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')", component, componentId, directory_, attributes, condition));
             }
             
             IList<string> associatedFeatures = db.ExecuteStringQuery(String.Format("SELECT * FROM FeatureComponents WHERE Component_ = '{0}'", component));
-
+           
             if (associatedFeatures.Count > 0) {
                 db.Execute(String.Format("UPDATE `FeatureComponents` SET `FeatureComponents`.`Feature_` = '{0}' WHERE `FeatureComponents`.`Component_` = '{1}'", feature, component));
             } else {
                 logger.Log(String.Format("MSI:     Attaching component '{0}' to feature '{1}'", component, feature));
                 db.Execute(String.Format("INSERT INTO `FeatureComponents` (Feature_, Component_) VALUES ('{0}', '{1}')", feature, component));
             }
+        }
+
+        public void Component_SetKeyPath(Database db, string component, string keyPath) { 
+            IList componentsWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Component WHERE Component = '{0}'", component));
+            if (componentsWithSameName.Count > 0) {
+                db.Execute(String.Format("UPDATE Component SET KeyPath = '{0}' WHERE Component = '{1}'", keyPath, component));
+            }
+        }
+
+        public string Registry_GetGuid(Database db, String component) {
+            string regGuid = String.Empty;
+            IList registry = db.ExecuteQuery(String.Format("SELECT Registry FROM Registry WHERE Component_ = '{0}'", component));
+            if (registry.Count > 0) {
+                foreach (string reg in registry) {
+                    if (reg[0].Equals('_')) {
+                        regGuid = reg;
+                        break;
+                    }
+                }
+            }
+            return regGuid;
         }
 
         public void dropRegs(Database db, string key) {

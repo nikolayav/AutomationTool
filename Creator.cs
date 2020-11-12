@@ -83,8 +83,8 @@ namespace AutomationTool {
 
                         MsiEditor.Feature_AddOrUpdate(db, proj.FeatureName, proj.FeatureName, "0", "1", "TARGETDIR", "48");
                         ReportProgress();
-                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx86, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName);
-                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx64, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName);
+                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx86, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName, String.Empty);
+                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx64, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName, "VersionNT64");
                         ReportProgress();
 
                         foreach (KeyValuePair<string, string> kvp in regDict) {
@@ -97,6 +97,12 @@ namespace AutomationTool {
                             }
                         }
                         ReportProgress();
+
+                        string keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx86);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx86, keyPath);
+                        keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx64);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx64, keyPath);
+
                         MsiEditor.ProcessProperties(db, proj);
                         ReportProgress();
                         proj.ProductCode = MsiEditor.GetProductAndUpgradeCodes(db, "ProductCode");
@@ -147,8 +153,8 @@ namespace AutomationTool {
 
                         msiEditor.Feature_AddOrUpdate(db, proj.FeatureName, proj.FeatureName, "0", "1", "TARGETDIR", "48");
                         ReportProgress();
-                        msiEditor.Component_AddOrUpdate(db, _auditComponentx86, msiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName);
-                        msiEditor.Component_AddOrUpdate(db, _auditComponentx64, msiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName);
+                        msiEditor.Component_AddOrUpdate(db, _auditComponentx86, msiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName, String.Empty);
+                        msiEditor.Component_AddOrUpdate(db, _auditComponentx64, msiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName, "VersionNT64");
                         ReportProgress();
 
                         foreach (KeyValuePair<string, string> kvp in regDict) {
@@ -160,6 +166,12 @@ namespace AutomationTool {
                                 msiEditor.Reg_Add(db, msiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, kvp.Value, _auditComponentx86);
                             }
                         }
+
+                        string keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx86);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx86, keyPath);
+                        keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx64);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx64, keyPath);
+
                         ReportProgress();
                         MsiEditor.ProcessProperties(db, proj);
 
@@ -214,8 +226,8 @@ namespace AutomationTool {
                         string oldFeature = msiEditor.FindExistingFeature(db, proj);
 
                         ReportProgress();
-                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx86, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName);
-                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx64, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName);
+                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx86, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName, String.Empty);
+                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx64, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName, "VersionNT64");
 
                         ReportProgress();
                         
@@ -232,6 +244,11 @@ namespace AutomationTool {
                         }
 
                         ReportProgress();
+
+                        string keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx86);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx86, keyPath);
+                        keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx64);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx64, keyPath);
 
                         MsiEditor.ProcessProperties(db, proj);
                         ReportProgress();
