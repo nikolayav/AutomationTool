@@ -42,10 +42,12 @@ namespace AutomationTool {
             }
         }
 
-        public void Component_SetKeyPath(Database db, string component, string keyPath) { 
-            IList componentsWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Component WHERE Component = '{0}'", component));
-            if (componentsWithSameName.Count > 0) {
-                db.Execute(String.Format("UPDATE Component SET KeyPath = '{0}' WHERE Component = '{1}'", keyPath, component));
+        public void Component_SetKeyPath(Database db, string component, string keyPath) {
+            if (!String.IsNullOrEmpty(keyPath)) {
+                IList componentsWithSameName = db.ExecuteQuery(String.Format("SELECT * FROM Component WHERE Component = '{0}'", component));
+                if (componentsWithSameName.Count > 0) {
+                    db.Execute(String.Format("UPDATE Component SET KeyPath = '{0}' WHERE Component = '{1}'", keyPath, component));
+                }
             }
         }
 

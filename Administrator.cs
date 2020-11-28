@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.ServiceModel.Configuration;
 using System.Text;
 
 namespace AutomationTool {
@@ -36,12 +37,13 @@ namespace AutomationTool {
             this.CheckIfFileExistsAndRenameOldFile(Path.Combine(this.ProjectFolder, "Work", uninstallvbs));
             try {
                 //Copying VBS files and replacing the proper lines
-                Encoding utf8WithoutBom = new UTF8Encoding(false);
+                //Encoding utf8WithoutBom = new UTF8Encoding(false);
+                
                 var vbsFileLines = File.ReadAllLines(@"templates\template_install.vbs");
                 Logger.Log(String.Format("SYS:     Creating {0}...", installvbs));
                 string lineToWrite = "";
                 using (FileStream fs = File.OpenWrite(Path.Combine(this.ProjectFolder, "Work", installvbs))) {
-                    using (StreamWriter sw = new StreamWriter(fs, utf8WithoutBom)) {
+                    using (StreamWriter sw = new StreamWriter(fs, Encoding.Default)) {
                         for (int i = 0; i < vbsFileLines.Length; i++) {
                             if (vbsFileLines[i].Contains("%%PACKAGENAME%%")) {
                                 lineToWrite = vbsFileLines[i].Replace("%%PACKAGENAME%%", String.Format("{0}_{1}", proj.PkgName, proj.PkgVer));
@@ -62,7 +64,7 @@ namespace AutomationTool {
                     ReportProgress();
                 }
                 using (FileStream fs = File.OpenWrite(Path.Combine(this.ProjectFolder, "Work", uninstallvbs))) {
-                    using (StreamWriter sw = new StreamWriter(fs, utf8WithoutBom)) {
+                    using (StreamWriter sw = new StreamWriter(fs, Encoding.Default)) {
                         vbsFileLines = File.ReadAllLines(@"templates\template_uninstall.vbs");
                         Logger.Log(String.Format("SYS:     Creating {0}...", uninstallvbs));
 

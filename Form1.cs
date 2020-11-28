@@ -108,21 +108,21 @@ namespace AutomationTool {
                 return false;
             }
 
-            if (!Regex.IsMatch(appNameTextBox.Text, "^[a-zA-Z0-9-_. ]*$")) {
-                MessageBox.Show("Please, enter a proper Application Name(e.g.no special characters)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!Regex.IsMatch(appNameTextBox.Text, "^[a-zA-Z0-9-_.()# ]+$")) {
+                MessageBox.Show("Please, enter a proper Application Name (no special characters)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 appNameTextBox.Focus();
                 appNameTextBox.SelectAll();
                 return false;
             }
 
-            if (!Regex.IsMatch(appVerTextBox.Text, "^[a-zA-Z0-9-_. ]*$")) {
-                MessageBox.Show("Please, enter a proper Application Version(e.g.no special characters)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!Regex.IsMatch(appVerTextBox.Text, "^[a-zA-Z0-9-_. ]+$")) {
+                MessageBox.Show("Please, enter a proper Application Version (no special characters)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 appVerTextBox.Focus();
                 appNameTextBox.SelectAll();
                 return false;
             }
 
-            if (!Regex.IsMatch(pkgNameTextBox.Text, "^[a-z0-9_]*$")) {
+            if (!Regex.IsMatch(pkgNameTextBox.Text, "^[a-z0-9_.#]+$")) {
                 MessageBox.Show("Please, enter a proper Package Name (e.g. bmw_sample_i_i", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 pkgNameTextBox.Focus();
                 pkgNameTextBox.SelectAll();
@@ -137,7 +137,7 @@ namespace AutomationTool {
             }
 
             if (!Regex.IsMatch(pkgrNameTextBox.Text, "^[A-Z][a-z]+\\s[A-Z][a-z]+$")) {
-                MessageBox.Show("Please, enter a proper Packager Name. (e.g. Firstname Lastname", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please, enter a proper Packager Name (e.g. Firstname Lastname)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 pkgrNameTextBox.Focus();
                 pkgrNameTextBox.SelectAll();
                 return false;
