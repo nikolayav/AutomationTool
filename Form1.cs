@@ -40,13 +40,16 @@ namespace AutomationTool {
             
             ProjectInfo proj = new ProjectInfo("", "", pimsIdTextBox.Text, appNameTextBox.Text, appVerTextBox.Text, pkgNameTextBox.Text, pkgVerTextBox.Text,
                                                 String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC"), "", "", String.Format("{0}_{1}_{2}", "BMW", pkgNameTextBox.Text, pkgVerTextBox.Text), 
-                                                "", Is32bit(), IsCustomMsi(), editMstCheckBox.Checked, fileLocationMstTextBox1.Text);
+                                                "", Is32bit(), IsCustomMsi(), editMstCheckBox.Checked, fileLocationMstTextBox1.Text, editMsiCheckBox.Checked);
             if (proj.isCustomMsi) {
                 proj.FolderPath = "";
                 proj.MsiName = "";
-            } else if (!proj.isEditMst && !proj.isCustomMsi){
+            } else if (!proj.isEditMst && !proj.isCustomMsi && !proj.isEditMsi) {
                 proj.FolderPath = Path.GetDirectoryName(_fullMsiPath) + "\\";
                 proj.MsiName = Path.GetFileNameWithoutExtension(_fullMsiPath);
+            } else if (proj.isEditMsi) {
+                proj.FolderPath = Path.GetDirectoryName(_fullMsiPath) + "\\";
+                proj.MsiName = String.Format("{0}_{1}", proj.PkgName, proj.PkgVer);
             } else {
                 proj.FolderPath = Path.GetDirectoryName(_fullMsiPath) + "\\";
                 proj.MsiName = Path.GetFileNameWithoutExtension(_fullMsiPath);
@@ -70,33 +73,6 @@ namespace AutomationTool {
 
         private void fileLocationTextBox1_Enter(object sender, EventArgs e) {
             fileLocationTextBox1.SelectAll();
-        }
-
-
-        private void customMsiCheckBox_CheckedChanged(object sender, EventArgs e) {
-            if (customMsiCheckBox.Checked) {
-                if (editMstCheckBox.Checked) {
-                    editMstCheckBox.Checked = false;
-                    
-                }
-                fileLocationMstTextBox1.BackColor = Color.Gainsboro;
-                fileLocationMstTextBox1.Enabled = false;
-                fileLocationTextBox1.BackColor = Color.Gainsboro;
-                fileLocationTextBox1.Text = "";
-                osComboBox.BackColor = Color.White;
-                fileLocationTextBox1.Enabled = false;
-                browseBtn1.Enabled = false;
-                osComboBox.Enabled = true;
-                loadMstBtn1.Enabled = false;
-            } else { 
-                fileLocationTextBox1.BackColor = Color.White;
-                fileLocationTextBox1.Enabled = true;
-                browseBtn1.Enabled = true;
-                osComboBox.BackColor = Color.Gainsboro;
-                osComboBox.Text = "Select OS Architecture";
-                osComboBox.Enabled = false;
-
-            }
         }
 
 
@@ -278,7 +254,7 @@ namespace AutomationTool {
             MsiEditor msiEditor = new MsiEditor();
             ProjectInfo proj = new ProjectInfo("", "", pimsIdTextBox.Text, appNameTextBox.Text, appVerTextBox.Text, pkgNameTextBox.Text, pkgVerTextBox.Text,
                                                 String.Format("{0}, {1}", pkgrNameTextBox.Text, "DXC"), "", "", String.Format("{0}_{1}_{2}", "BMW", pkgNameTextBox.Text, pkgVerTextBox.Text),
-                                                "", customMsiCheckBox.Checked, Is32bit(), editMstCheckBox.Checked, fileLocationMstTextBox1.Text);
+                                                "", customMsiCheckBox.Checked, Is32bit(), editMstCheckBox.Checked, fileLocationMstTextBox1.Text, editMsiCheckBox.Checked);
 
             Dictionary<string, string> extract = msiEditor.checkProperties(_loadMsiPath, _loadMstPath);
             DataGridViewRow row = new DataGridViewRow();
@@ -335,15 +311,40 @@ namespace AutomationTool {
             }
         }
 
+        private void customMsiCheckBox_CheckedChanged(object sender, EventArgs e) {
+            if (customMsiCheckBox.Checked) {
+                if (editMstCheckBox.Checked) {
+                    editMstCheckBox.Checked = false;
+                }
+                fileLocationMstTextBox1.BackColor = Color.Gainsboro;
+                fileLocationMstTextBox1.Enabled = false;
+                fileLocationTextBox1.BackColor = Color.Gainsboro;
+                fileLocationTextBox1.Text = "";
+                osComboBox.BackColor = Color.White;
+                fileLocationTextBox1.Enabled = false;
+                browseBtn1.Enabled = false;
+                osComboBox.Enabled = true;
+                loadMstBtn1.Enabled = false;
+                editMsiCheckBox.Checked = false;
+            } else {
+                fileLocationTextBox1.BackColor = Color.White;
+                fileLocationTextBox1.Enabled = true;
+                browseBtn1.Enabled = true;
+                osComboBox.BackColor = Color.Gainsboro;
+                osComboBox.Text = "Select OS Architecture";
+                osComboBox.Enabled = false;
+
+            }
+        }
+
         private void editMstCheckBox_CheckedChanged(object sender, EventArgs e) {
             if (editMstCheckBox.Checked) {
                 fileLocationMstTextBox1.Enabled = true;
                 fileLocationMstTextBox1.BackColor = Color.White;
                 browseBtn1.Enabled = true;
                 loadMstBtn1.Enabled = true;
-                if (customMsiCheckBox.Checked) {
-                    customMsiCheckBox.Checked = false;
-                }
+                customMsiCheckBox.Checked = false;
+                editMsiCheckBox.Checked = false;
                 
             } else {
                 loadMstBtn1.Enabled = false;
@@ -352,5 +353,13 @@ namespace AutomationTool {
             }
         }
 
+        private void editMsiCheckBox_CheckedChanged(object sender, EventArgs e) {
+            if (editMsiCheckBox.Checked) {
+                editMstCheckBox.Checked = false;
+                customMsiCheckBox.Checked = false;
+                fileLocationMstTextBox1.Enabled = false;
+                fileLocationTextBox1.Enabled = true;
+            }
+        }
     }
 }

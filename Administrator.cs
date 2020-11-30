@@ -48,7 +48,7 @@ namespace AutomationTool {
                             if (vbsFileLines[i].Contains("%%PACKAGENAME%%")) {
                                 lineToWrite = vbsFileLines[i].Replace("%%PACKAGENAME%%", String.Format("{0}_{1}", proj.PkgName, proj.PkgVer));
                             } else if (vbsFileLines[i].Contains("Command(0) =")) {
-                                if (!proj.isCustomMsi) {
+                                if (!proj.isCustomMsi && !proj.isEditMsi) {
                                     lineToWrite = String.Format("Command(0) = \"msiexec.exe /i \"\"{0}\"\" TRANSFORMS=\"\"{1}\"\" /qn /l*v %temp%\\{2}\"", Path.GetFileName(this.fullMsiPath), String.Format("{0}_{1}.mst", proj.PkgName, proj.PkgVer), String.Format("{0}_{1}.install.log", proj.PkgName, proj.PkgVer));
                                     Logger.Log(String.Format("VBS:     Inserting '{0}'", lineToWrite));
                                 } else {

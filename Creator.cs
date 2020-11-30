@@ -279,6 +279,77 @@ namespace AutomationTool {
             ReportProgress();
         }
 
+        public void EditMsi(ProjectInfo proj) {
+            Dictionary<string, string> regDict = ExtractRegKeysFromFile(ref _auditKeyPath);
+
+            ReportProgress();
+            string referenceDb = adm.FullMsiPath;
+            string msi = Path.Combine(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp", adm.ProjectFolder, "Work", String.Format("{0}.msi", String.Format("{0}_{1}", proj.PkgName, proj.PkgVer)));
+
+            adm.CheckIfFileExistsAndRenameOldFile(msi);
+
+            Logger.Log(String.Format("SYS:     Creating {0} file...", Path.GetFileName(msi)));
+
+            File.Copy(referenceDb, msi, true);
+            ReportProgress();
+            try {
+                using (var origDatabase = new Database(referenceDb, DatabaseOpenMode.ReadOnly)) {
+                    using (var db = new Database(msi, DatabaseOpenMode.Direct)) {
+
+                        MsiEditor.UpdateFeatureAssociations(db, proj, proj.FeatureName, proj.FeatureName, "0", "1", "TARGETDIR", "48");
+                        string oldFeature = msiEditor.FindExistingFeature(db, proj);
+
+                        ReportProgress();
+                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx86, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "4", proj.FeatureName, String.Empty);
+                        MsiEditor.Component_AddOrUpdate(db, _auditComponentx64, MsiEditor.GenerateUniqueGuid(db, "component"), "TARGETDIR", "260", proj.FeatureName, "VersionNT64");
+
+                        ReportProgress();
+
+                        msiEditor.dropRegs(db, _auditKeyPath);
+
+                        foreach (KeyValuePair<string, string> kvp in regDict) {
+                            if (kvp.Key.Equals("MSIPackageName")) {
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), _auditComponentx64);
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), _auditComponentx86);
+                            } else {
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, kvp.Value, _auditComponentx64);
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, kvp.Value, _auditComponentx86);
+                            }
+                        }
+
+                        ReportProgress();
+
+                        string keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx86);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx86, keyPath);
+                        keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx64);
+                        msiEditor.Component_SetKeyPath(db, _auditComponentx64, keyPath);
+
+                        MsiEditor.ProcessProperties(db, proj);
+
+                        proj.ProductCode = MsiEditor.GetProductAndUpgradeCodes(db, "ProductCode");
+                        proj.UpgradeCode = MsiEditor.GetProductAndUpgradeCodes(db, "UpgradeCode");
+
+                        Logger.Log("MSI:     Editing summary information stream...");
+
+                        // Edit summary info stream
+                        db.SummaryInfo.Title = proj.AppName;
+                        db.SummaryInfo.Subject = proj.AppName;
+                        db.SummaryInfo.Comments = proj.Comments;
+                        db.SummaryInfo.Author = proj.AuthorName;
+                        ReportProgress();
+                        Logger.Log(String.Format("MSI:     Saving {0} file...", Path.GetFileName(msi)));
+
+                        db.Commit();
+                    }
+                }
+            } catch {
+                throw;
+            } finally {
+                //File.Delete(tempDb);
+            }
+            ReportProgress();
+        }
+
         private Dictionary<string, string> ExtractRegKeysFromFile(ref string _auditKeyPath) {
             Logger.Log("SYS:     Extracting .reg info from '...templates\\template_auditkey.reg'");
 

@@ -35,6 +35,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.metroTabPage1 = new MetroFramework.Controls.MetroTabPage();
+            this.editMsiCheckBox = new MetroFramework.Controls.MetroCheckBox();
+            this.customMsiCheckBox = new MetroFramework.Controls.MetroCheckBox();
             this.editMstCheckBox = new MetroFramework.Controls.MetroCheckBox();
             this.loadMstLabel1 = new MetroFramework.Controls.MetroLabel();
             this.loadMstBtn1 = new MetroFramework.Controls.MetroButton();
@@ -50,7 +52,6 @@
             this.pimsIdTextBox = new MetroFramework.Controls.MetroTextBox();
             this.fileLocationTextBox1 = new MetroFramework.Controls.MetroTextBox();
             this.browseBtn1 = new MetroFramework.Controls.MetroButton();
-            this.customMsiCheckBox = new MetroFramework.Controls.MetroCheckBox();
             this.pkgrNameLabel = new MetroFramework.Controls.MetroLabel();
             this.pkgVerLabel = new MetroFramework.Controls.MetroLabel();
             this.pkgNameLabel = new MetroFramework.Controls.MetroLabel();
@@ -112,13 +113,15 @@
             this.metroTabControl1.Location = new System.Drawing.Point(22, 92);
             this.metroTabControl1.Name = "metroTabControl1";
             this.metroTabControl1.SelectedIndex = 0;
-            this.metroTabControl1.Size = new System.Drawing.Size(355, 509);
+            this.metroTabControl1.Size = new System.Drawing.Size(385, 509);
             this.metroTabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.metroTabControl1.TabIndex = 45;
             this.metroTabControl1.UseSelectable = true;
             // 
             // metroTabPage1
             // 
+            this.metroTabPage1.Controls.Add(this.editMsiCheckBox);
+            this.metroTabPage1.Controls.Add(this.customMsiCheckBox);
             this.metroTabPage1.Controls.Add(this.editMstCheckBox);
             this.metroTabPage1.Controls.Add(this.loadMstLabel1);
             this.metroTabPage1.Controls.Add(this.loadMstBtn1);
@@ -134,7 +137,6 @@
             this.metroTabPage1.Controls.Add(this.pimsIdTextBox);
             this.metroTabPage1.Controls.Add(this.fileLocationTextBox1);
             this.metroTabPage1.Controls.Add(this.browseBtn1);
-            this.metroTabPage1.Controls.Add(this.customMsiCheckBox);
             this.metroTabPage1.Controls.Add(this.pkgrNameLabel);
             this.metroTabPage1.Controls.Add(this.pkgVerLabel);
             this.metroTabPage1.Controls.Add(this.pkgNameLabel);
@@ -147,17 +149,39 @@
             this.metroTabPage1.HorizontalScrollbarSize = 10;
             this.metroTabPage1.Location = new System.Drawing.Point(4, 41);
             this.metroTabPage1.Name = "metroTabPage1";
-            this.metroTabPage1.Size = new System.Drawing.Size(347, 464);
+            this.metroTabPage1.Size = new System.Drawing.Size(377, 464);
             this.metroTabPage1.TabIndex = 0;
             this.metroTabPage1.Text = "Project";
             this.metroTabPage1.VerticalScrollbarBarColor = true;
             this.metroTabPage1.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage1.VerticalScrollbarSize = 10;
             // 
+            // editMsiCheckBox
+            // 
+            this.editMsiCheckBox.AutoSize = true;
+            this.editMsiCheckBox.Location = new System.Drawing.Point(305, 90);
+            this.editMsiCheckBox.Name = "editMsiCheckBox";
+            this.editMsiCheckBox.Size = new System.Drawing.Size(66, 15);
+            this.editMsiCheckBox.TabIndex = 66;
+            this.editMsiCheckBox.Text = "Edit MSI";
+            this.editMsiCheckBox.UseSelectable = true;
+            this.editMsiCheckBox.CheckedChanged += new System.EventHandler(this.editMsiCheckBox_CheckedChanged);
+            // 
+            // customMsiCheckBox
+            // 
+            this.customMsiCheckBox.AutoSize = true;
+            this.customMsiCheckBox.Location = new System.Drawing.Point(140, 90);
+            this.customMsiCheckBox.Name = "customMsiCheckBox";
+            this.customMsiCheckBox.Size = new System.Drawing.Size(80, 15);
+            this.customMsiCheckBox.TabIndex = 5;
+            this.customMsiCheckBox.Text = "Create MSI";
+            this.customMsiCheckBox.UseSelectable = true;
+            this.customMsiCheckBox.CheckedChanged += new System.EventHandler(this.customMsiCheckBox_CheckedChanged);
+            // 
             // editMstCheckBox
             // 
             this.editMstCheckBox.AutoSize = true;
-            this.editMstCheckBox.Location = new System.Drawing.Point(140, 90);
+            this.editMstCheckBox.Location = new System.Drawing.Point(226, 90);
             this.editMstCheckBox.Name = "editMstCheckBox";
             this.editMstCheckBox.Size = new System.Drawing.Size(69, 15);
             this.editMstCheckBox.TabIndex = 4;
@@ -177,7 +201,7 @@
             // loadMstBtn1
             // 
             this.loadMstBtn1.Enabled = false;
-            this.loadMstBtn1.Location = new System.Drawing.Point(299, 52);
+            this.loadMstBtn1.Location = new System.Drawing.Point(333, 52);
             this.loadMstBtn1.Name = "loadMstBtn1";
             this.loadMstBtn1.Size = new System.Drawing.Size(35, 23);
             this.loadMstBtn1.TabIndex = 3;
@@ -192,7 +216,7 @@
             // 
             // 
             this.fileLocationMstTextBox1.CustomButton.Image = null;
-            this.fileLocationMstTextBox1.CustomButton.Location = new System.Drawing.Point(131, 1);
+            this.fileLocationMstTextBox1.CustomButton.Location = new System.Drawing.Point(165, 1);
             this.fileLocationMstTextBox1.CustomButton.Name = "";
             this.fileLocationMstTextBox1.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.fileLocationMstTextBox1.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -211,7 +235,7 @@
             this.fileLocationMstTextBox1.SelectionLength = 0;
             this.fileLocationMstTextBox1.SelectionStart = 0;
             this.fileLocationMstTextBox1.ShortcutsEnabled = true;
-            this.fileLocationMstTextBox1.Size = new System.Drawing.Size(153, 23);
+            this.fileLocationMstTextBox1.Size = new System.Drawing.Size(187, 23);
             this.fileLocationMstTextBox1.TabIndex = 2;
             this.fileLocationMstTextBox1.UseCustomBackColor = true;
             this.fileLocationMstTextBox1.UseSelectable = true;
@@ -224,7 +248,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(0, 445);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(344, 5);
+            this.progressBar1.Size = new System.Drawing.Size(374, 5);
             this.progressBar1.TabIndex = 46;
             this.progressBar1.Visible = false;
             // 
@@ -240,7 +264,7 @@
             this.osComboBox.Location = new System.Drawing.Point(140, 328);
             this.osComboBox.Name = "osComboBox";
             this.osComboBox.PromptText = "Select OS Architecture";
-            this.osComboBox.Size = new System.Drawing.Size(194, 29);
+            this.osComboBox.Size = new System.Drawing.Size(228, 29);
             this.osComboBox.TabIndex = 12;
             this.osComboBox.UseCustomBackColor = true;
             this.osComboBox.UseSelectable = true;
@@ -260,7 +284,7 @@
             // 
             // 
             this.pkgrNameTextBox.CustomButton.Image = null;
-            this.pkgrNameTextBox.CustomButton.Location = new System.Drawing.Point(172, 1);
+            this.pkgrNameTextBox.CustomButton.Location = new System.Drawing.Point(206, 1);
             this.pkgrNameTextBox.CustomButton.Name = "";
             this.pkgrNameTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.pkgrNameTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -278,7 +302,7 @@
             this.pkgrNameTextBox.SelectionLength = 0;
             this.pkgrNameTextBox.SelectionStart = 0;
             this.pkgrNameTextBox.ShortcutsEnabled = true;
-            this.pkgrNameTextBox.Size = new System.Drawing.Size(194, 23);
+            this.pkgrNameTextBox.Size = new System.Drawing.Size(228, 23);
             this.pkgrNameTextBox.TabIndex = 11;
             this.pkgrNameTextBox.UseSelectable = true;
             this.pkgrNameTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -290,7 +314,7 @@
             // 
             // 
             this.pkgVerTextBox.CustomButton.Image = null;
-            this.pkgVerTextBox.CustomButton.Location = new System.Drawing.Point(172, 1);
+            this.pkgVerTextBox.CustomButton.Location = new System.Drawing.Point(206, 1);
             this.pkgVerTextBox.CustomButton.Name = "";
             this.pkgVerTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.pkgVerTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -308,7 +332,7 @@
             this.pkgVerTextBox.SelectionLength = 0;
             this.pkgVerTextBox.SelectionStart = 0;
             this.pkgVerTextBox.ShortcutsEnabled = true;
-            this.pkgVerTextBox.Size = new System.Drawing.Size(194, 23);
+            this.pkgVerTextBox.Size = new System.Drawing.Size(228, 23);
             this.pkgVerTextBox.TabIndex = 10;
             this.pkgVerTextBox.UseSelectable = true;
             this.pkgVerTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -320,7 +344,7 @@
             // 
             // 
             this.pkgNameTextBox.CustomButton.Image = null;
-            this.pkgNameTextBox.CustomButton.Location = new System.Drawing.Point(172, 1);
+            this.pkgNameTextBox.CustomButton.Location = new System.Drawing.Point(206, 1);
             this.pkgNameTextBox.CustomButton.Name = "";
             this.pkgNameTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.pkgNameTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -338,7 +362,7 @@
             this.pkgNameTextBox.SelectionLength = 0;
             this.pkgNameTextBox.SelectionStart = 0;
             this.pkgNameTextBox.ShortcutsEnabled = true;
-            this.pkgNameTextBox.Size = new System.Drawing.Size(194, 23);
+            this.pkgNameTextBox.Size = new System.Drawing.Size(228, 23);
             this.pkgNameTextBox.TabIndex = 9;
             this.pkgNameTextBox.UseSelectable = true;
             this.pkgNameTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -350,7 +374,7 @@
             // 
             // 
             this.appVerTextBox.CustomButton.Image = null;
-            this.appVerTextBox.CustomButton.Location = new System.Drawing.Point(172, 1);
+            this.appVerTextBox.CustomButton.Location = new System.Drawing.Point(206, 1);
             this.appVerTextBox.CustomButton.Name = "";
             this.appVerTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.appVerTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -368,7 +392,7 @@
             this.appVerTextBox.SelectionLength = 0;
             this.appVerTextBox.SelectionStart = 0;
             this.appVerTextBox.ShortcutsEnabled = true;
-            this.appVerTextBox.Size = new System.Drawing.Size(194, 23);
+            this.appVerTextBox.Size = new System.Drawing.Size(228, 23);
             this.appVerTextBox.TabIndex = 8;
             this.appVerTextBox.UseSelectable = true;
             this.appVerTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -380,7 +404,7 @@
             // 
             // 
             this.appNameTextBox.CustomButton.Image = null;
-            this.appNameTextBox.CustomButton.Location = new System.Drawing.Point(172, 1);
+            this.appNameTextBox.CustomButton.Location = new System.Drawing.Point(206, 1);
             this.appNameTextBox.CustomButton.Name = "";
             this.appNameTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.appNameTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -398,7 +422,7 @@
             this.appNameTextBox.SelectionLength = 0;
             this.appNameTextBox.SelectionStart = 0;
             this.appNameTextBox.ShortcutsEnabled = true;
-            this.appNameTextBox.Size = new System.Drawing.Size(194, 23);
+            this.appNameTextBox.Size = new System.Drawing.Size(228, 23);
             this.appNameTextBox.TabIndex = 7;
             this.appNameTextBox.UseSelectable = true;
             this.appNameTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -412,7 +436,7 @@
             // 
             this.pimsIdTextBox.CustomButton.FlatAppearance.BorderSize = 0;
             this.pimsIdTextBox.CustomButton.Image = null;
-            this.pimsIdTextBox.CustomButton.Location = new System.Drawing.Point(172, 1);
+            this.pimsIdTextBox.CustomButton.Location = new System.Drawing.Point(206, 1);
             this.pimsIdTextBox.CustomButton.Name = "";
             this.pimsIdTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.pimsIdTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -430,7 +454,7 @@
             this.pimsIdTextBox.SelectionLength = 0;
             this.pimsIdTextBox.SelectionStart = 0;
             this.pimsIdTextBox.ShortcutsEnabled = true;
-            this.pimsIdTextBox.Size = new System.Drawing.Size(194, 23);
+            this.pimsIdTextBox.Size = new System.Drawing.Size(228, 23);
             this.pimsIdTextBox.TabIndex = 6;
             this.pimsIdTextBox.UseSelectable = true;
             this.pimsIdTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -443,7 +467,7 @@
             // 
             // 
             this.fileLocationTextBox1.CustomButton.Image = null;
-            this.fileLocationTextBox1.CustomButton.Location = new System.Drawing.Point(131, 1);
+            this.fileLocationTextBox1.CustomButton.Location = new System.Drawing.Point(165, 1);
             this.fileLocationTextBox1.CustomButton.Name = "";
             this.fileLocationTextBox1.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.fileLocationTextBox1.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -461,7 +485,7 @@
             this.fileLocationTextBox1.SelectionLength = 0;
             this.fileLocationTextBox1.SelectionStart = 0;
             this.fileLocationTextBox1.ShortcutsEnabled = true;
-            this.fileLocationTextBox1.Size = new System.Drawing.Size(153, 23);
+            this.fileLocationTextBox1.Size = new System.Drawing.Size(187, 23);
             this.fileLocationTextBox1.TabIndex = 0;
             this.fileLocationTextBox1.UseCustomBackColor = true;
             this.fileLocationTextBox1.UseSelectable = true;
@@ -470,7 +494,7 @@
             // 
             // browseBtn1
             // 
-            this.browseBtn1.Location = new System.Drawing.Point(299, 22);
+            this.browseBtn1.Location = new System.Drawing.Point(333, 22);
             this.browseBtn1.Name = "browseBtn1";
             this.browseBtn1.Size = new System.Drawing.Size(35, 23);
             this.browseBtn1.TabIndex = 1;
@@ -478,17 +502,6 @@
             this.browseBtn1.UseCustomBackColor = true;
             this.browseBtn1.UseSelectable = true;
             this.browseBtn1.Click += new System.EventHandler(this.browseBtn1_Click);
-            // 
-            // customMsiCheckBox
-            // 
-            this.customMsiCheckBox.AutoSize = true;
-            this.customMsiCheckBox.Location = new System.Drawing.Point(246, 90);
-            this.customMsiCheckBox.Name = "customMsiCheckBox";
-            this.customMsiCheckBox.Size = new System.Drawing.Size(88, 15);
-            this.customMsiCheckBox.TabIndex = 5;
-            this.customMsiCheckBox.Text = "Custom MSI";
-            this.customMsiCheckBox.UseSelectable = true;
-            this.customMsiCheckBox.CheckedChanged += new System.EventHandler(this.customMsiCheckBox_CheckedChanged);
             // 
             // pkgrNameLabel
             // 
@@ -550,7 +563,7 @@
             this.createBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.createBtn.Location = new System.Drawing.Point(140, 381);
             this.createBtn.Name = "createBtn";
-            this.createBtn.Size = new System.Drawing.Size(194, 44);
+            this.createBtn.Size = new System.Drawing.Size(228, 44);
             this.createBtn.TabIndex = 13;
             this.createBtn.Text = "Create";
             this.createBtn.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -569,7 +582,7 @@
             this.metroTabPage2.HorizontalScrollbarSize = 10;
             this.metroTabPage2.Location = new System.Drawing.Point(4, 41);
             this.metroTabPage2.Name = "metroTabPage2";
-            this.metroTabPage2.Size = new System.Drawing.Size(347, 464);
+            this.metroTabPage2.Size = new System.Drawing.Size(377, 464);
             this.metroTabPage2.TabIndex = 1;
             this.metroTabPage2.Text = "MSI Checks";
             this.metroTabPage2.VerticalScrollbarBarColor = true;
@@ -736,18 +749,18 @@
             // verLabel1
             // 
             this.verLabel1.AutoSize = true;
-            this.verLabel1.Location = new System.Drawing.Point(323, 33);
+            this.verLabel1.Location = new System.Drawing.Point(351, 30);
             this.verLabel1.Name = "verLabel1";
             this.verLabel1.Size = new System.Drawing.Size(52, 19);
             this.verLabel1.TabIndex = 46;
-            this.verLabel1.Text = "v0.9.2.5";
+            this.verLabel1.Text = "v0.9.3.0";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(397, 622);
+            this.ClientSize = new System.Drawing.Size(424, 622);
             this.Controls.Add(this.metroTabControl1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.verLabel1);
@@ -814,6 +827,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private MetroFramework.Controls.MetroLabel verLabel1;
+        private MetroFramework.Controls.MetroCheckBox editMsiCheckBox;
     }
 }
 

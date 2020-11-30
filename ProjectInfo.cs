@@ -16,10 +16,11 @@
         public bool is32bit;
         public bool isCustomMsi;
         public bool isEditMst;
+        public bool isEditMsi;
 
         public ProjectInfo(string folderPath, string msiName, string pimsId, string appName, string appVer,
             string pkgName, string pkgVer, string authorName, string productCode, string upgradeCode, string featureName, 
-            string comments, bool is32bit, bool isCustomMsi, bool isEditMst, string editMstPath) {
+            string comments, bool is32bit, bool isCustomMsi, bool isEditMst, string editMstPath, bool editMsi) {
             this.folderPath = folderPath;
             this.msiName = msiName;
             this.pimsId = pimsId;
@@ -36,6 +37,7 @@
             this.isCustomMsi = isCustomMsi;
             this.isEditMst = isEditMst;
             this.editMstPath = editMstPath;
+            this.isEditMsi = editMsi;
         }
 
         public string EditMstPath { get => editMstPath; set => editMstPath = value; }
