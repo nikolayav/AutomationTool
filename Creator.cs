@@ -98,6 +98,8 @@ namespace AutomationTool {
                         }
                         ReportProgress();
 
+                        
+
                         string keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx86);
                         msiEditor.Component_SetKeyPath(db, _auditComponentx86, keyPath);
                         keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx64);
@@ -316,6 +318,7 @@ namespace AutomationTool {
                                 MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, kvp.Value, _auditComponentx86);
                             }
                         }
+
 
                         ReportProgress();
 

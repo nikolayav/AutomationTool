@@ -91,7 +91,7 @@ namespace AutomationTool {
                 return false;
             }
 
-            if (!Regex.IsMatch(appVerTextBox.Text, "^[a-zA-Z0-9-_. ]+$")) {
+            if (!Regex.IsMatch(appVerTextBox.Text, "^[a-zA-Z0-9-_.() ]+$")) {
                 MessageBox.Show("Please, enter a proper Application Version (no special characters)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 appVerTextBox.Focus();
                 appNameTextBox.SelectAll();

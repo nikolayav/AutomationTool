@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 namespace AutomationTool {
@@ -27,6 +29,7 @@ namespace AutomationTool {
             if (componentsWithSameName.Count > 0) { 
                 logger.Log(String.Format("MSI:     Updating component '{0}'", component));
                 db.Execute(String.Format("UPDATE Component SET ComponentId = '{0}', Directory_ = '{1}', Attributes = '{2}', Condition = '{3}' WHERE Component = '{4}'", componentId, directory_, attributes, condition, component));
+
             } else {
                 logger.Log(String.Format("MSI:     Creating component '{0}'", component));
                 db.Execute(String.Format("INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `Condition`) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')", component, componentId, directory_, attributes, condition));
@@ -34,9 +37,8 @@ namespace AutomationTool {
             
             IList<string> associatedFeatures = db.ExecuteStringQuery(String.Format("SELECT * FROM FeatureComponents WHERE Component_ = '{0}'", component));
            
-            if (associatedFeatures.Count > 0) {
-                db.Execute(String.Format("UPDATE `FeatureComponents` SET `FeatureComponents`.`Feature_` = '{0}' WHERE `FeatureComponents`.`Component_` = '{1}'", feature, component));
-            } else {
+            if (associatedFeatures.Count == 0) {
+                
                 logger.Log(String.Format("MSI:     Attaching component '{0}' to feature '{1}'", component, feature));
                 db.Execute(String.Format("INSERT INTO `FeatureComponents` (Feature_, Component_) VALUES ('{0}', '{1}')", feature, component));
             }
@@ -237,6 +239,7 @@ namespace AutomationTool {
                 logger.Log(String.Format("MSI:     Attaching component '{0}' to feature '{1}'", c, feature));
                 db.Execute(String.Format("DELETE FROM FeatureComponents WHERE Component_ = '{0}'", c));
                 db.Execute(String.Format("INSERT INTO `FeatureComponents` (Feature_, Component_) VALUES ('{0}', '{1}')", feature, c));
+                db.Execute(String.Format("UPDATE Component SET ComponentId = '{0}' WHERE Component = '{1}'", GenerateUniqueGuid(db, "component"), c));
             }
             logger.Log(String.Format("MSI:     Deleting old feature '{0}'", oldFeature));
             db.Execute(String.Format("DELETE FROM Feature WHERE Feature = '{0}'", oldFeature));
@@ -251,7 +254,7 @@ namespace AutomationTool {
             string featureName = "";
             IList<string> features = db.ExecuteStringQuery("SELECT Feature FROM Feature");
             foreach (string feature in features) {
-                if (feature.Contains(String.Format("BMW_{0}", proj.PkgName))) {
+                if (feature.Contains("BMW_")) {
                     featureName = feature;
                     break;
                 }
