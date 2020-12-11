@@ -239,6 +239,8 @@ namespace AutomationTool {
                 logger.Log(String.Format("MSI:     Attaching component '{0}' to feature '{1}'", c, feature));
                 db.Execute(String.Format("DELETE FROM FeatureComponents WHERE Component_ = '{0}'", c));
                 db.Execute(String.Format("INSERT INTO `FeatureComponents` (Feature_, Component_) VALUES ('{0}', '{1}')", feature, c));
+
+                logger.Log(String.Format("MSI:     Updateing GUID for component '{0}'", c));
                 db.Execute(String.Format("UPDATE Component SET ComponentId = '{0}' WHERE Component = '{1}'", GenerateUniqueGuid(db, "component"), c));
             }
             logger.Log(String.Format("MSI:     Deleting old feature '{0}'", oldFeature));

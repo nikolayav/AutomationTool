@@ -311,8 +311,8 @@ namespace AutomationTool {
 
                         foreach (KeyValuePair<string, string> kvp in regDict) {
                             if (kvp.Key.Equals("MSIPackageName")) {
-                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), _auditComponentx64);
-                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, Path.GetFileName(this.adm.FullMsiPath), _auditComponentx86);
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, String.Format("{0}_{1}.msi", proj.PkgName, proj.PkgVer), _auditComponentx64);
+                                MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, String.Format("{0}_{1}.msi", proj.PkgName, proj.PkgVer), _auditComponentx86);
                             } else {
                                 MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, kvp.Value, _auditComponentx64);
                                 MsiEditor.Reg_Add(db, MsiEditor.GenerateUniqueGuid(db, "registry"), "2", _auditKeyPath, kvp.Key, kvp.Value, _auditComponentx86);
@@ -329,8 +329,8 @@ namespace AutomationTool {
 
                         MsiEditor.ProcessProperties(db, proj);
 
-                        proj.ProductCode = MsiEditor.GetProductAndUpgradeCodes(db, "ProductCode");
-                        proj.UpgradeCode = MsiEditor.GetProductAndUpgradeCodes(db, "UpgradeCode");
+                        proj.ProductCode = MsiEditor.GenerateUniqueGuid(db, "component");
+                        proj.UpgradeCode = MsiEditor.GenerateUniqueGuid(db, "component");
 
                         Logger.Log("MSI:     Editing summary information stream...");
 
