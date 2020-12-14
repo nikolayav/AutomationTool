@@ -172,7 +172,7 @@ namespace AutomationTool {
             Property_AddOrUpdate("PROMPTROLLBACKCOST", "D", db);
             Property_AddOrUpdate("REBOOT", "ReallySuppress", db);
             Property_AddOrUpdate("REBOOTPROMPT", "S", db);
-            if (proj.isCustomMsi) {
+            if (proj.isCustomMsi || proj.isEditMsi) {
                 Property_AddOrUpdate("ProductName", proj.AppName, db);
                 Property_AddOrUpdate("ProductVersion", proj.AppVer, db);
                 Property_AddOrUpdate("Manufacturer", "BMW Package Factory", db);
