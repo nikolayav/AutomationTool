@@ -327,10 +327,10 @@ namespace AutomationTool {
                         keyPath = msiEditor.Registry_GetGuid(db, _auditComponentx64);
                         msiEditor.Component_SetKeyPath(db, _auditComponentx64, keyPath);
 
-                        MsiEditor.ProcessProperties(db, proj);
-
                         proj.ProductCode = MsiEditor.GenerateUniqueGuid(db, "component");
                         proj.UpgradeCode = MsiEditor.GenerateUniqueGuid(db, "component");
+
+                        MsiEditor.ProcessProperties(db, proj);
 
                         Logger.Log("MSI:     Editing summary information stream...");
 
