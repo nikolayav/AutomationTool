@@ -244,7 +244,9 @@ namespace AutomationTool {
                 db.Execute(String.Format("UPDATE Component SET ComponentId = '{0}' WHERE Component = '{1}'", GenerateUniqueGuid(db, "component"), c));
             }
             logger.Log(String.Format("MSI:     Deleting old feature '{0}'", oldFeature));
-            db.Execute(String.Format("DELETE FROM Feature WHERE Feature = '{0}'", oldFeature));
+            if (!String.IsNullOrEmpty(oldFeature)) {
+                db.Execute(String.Format("DELETE FROM Feature WHERE Feature = '{0}'", oldFeature));
+            }
         }
 
         public IList<string> findComponentsAssociatedWithOldFeature(Database db, string oldFeature) {
