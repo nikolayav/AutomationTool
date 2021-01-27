@@ -57,11 +57,9 @@ namespace AutomationTool {
                 _adm.CreateInstallUninstallVbs(_proj, false, String.Format("{0}_{1}_install.vbs", _proj.PkgName, _proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", _proj.PkgName, _proj.PkgVer));
             } else if (_proj.isCustomMsi) {
                 _creator.GenerateCustomMsi(_proj, _proj.is32bit);
-                _creator.CreateXLSX(_proj);
                 _adm.CreateInstallUninstallVbs(_proj, true, String.Format("{0}_{1}_install.vbs", _proj.PkgName, _proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", _proj.PkgName, _proj.PkgVer));
             } else if (_proj.isEditMst) {
                 _creator.EditMst(_proj);
-                _creator.CreateXLSX(_proj);
                 _adm.CreateInstallUninstallVbs(_proj, false, String.Format("{0}_{1}_install.vbs", _proj.PkgName, _proj.PkgVer), String.Format("{0}_{1}_uninstall.vbs", _proj.PkgName, _proj.PkgVer));
             } else if (_proj.isEditMsi) {
                 _creator.EditMsi(_proj);

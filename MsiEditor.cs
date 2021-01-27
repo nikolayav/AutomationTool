@@ -68,7 +68,9 @@ namespace AutomationTool {
         }
 
         public void dropRegs(Database db, string key) {
-            db.Execute(String.Format("DELETE FROM `Registry` WHERE `Registry`.`Key` = '{0}'", key));
+            if (db.Tables.Contains("Registry")) {
+                db.Execute(String.Format("DELETE FROM `Registry` WHERE `Registry`.`Key` = '{0}'", key));
+            }
         }
 
         public void Reg_Add(Database db, string registry, string root, string key, string name, string value, string component) {
@@ -134,13 +136,17 @@ namespace AutomationTool {
                         }
                     }
                 } else {
-                    throw new System.InvalidOperationException("'Registry' table does not exist in MSI.");
+                    if (!db.Tables.Contains("Registry")) {
+                        db.Import(@"templates\Registry.idt");
+                    }
+                    // throw new System.InvalidOperationException("'Registry' table does not exist in MSI.");
                 }
 
             } else if (type.Equals("component")) {
                 guid = "{" + Guid.NewGuid().ToString().ToUpperInvariant() + "}";
 
                 if (db.Tables.Contains("Component")) {
+
                     IList existingComponents = db.ExecuteQuery("SELECT ComponentId FROM Component");
 
                     foreach (string componentId in existingComponents) {
